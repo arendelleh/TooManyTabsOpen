@@ -5,6 +5,16 @@
 
 A full 3D fairytale reflection game about academic overwhelm and making room for one small choice.
 
+## Preview
+
+Captured from the game. Use the character panel to change seasons and the day/night setting to change the forest mood.
+
+| Welcome | Snowfall and character selection |
+| --- | --- |
+| ![Welcome to the forest](docs/screenshots/welcome.png) | ![Snowfall day and character chooser](docs/screenshots/snowfall-day.png) |
+| **The Lanternwood at night** | **The quiet glade in Autumn** |
+| ![Snowfall night with fairy lights](docs/screenshots/lanternwood-night.png) | ![Autumn quiet glade](docs/screenshots/quiet-glade.png) |
+
 ## Two moods, one story
 
 - **The Daydream Grove:** pastel skies, blossom-colored trees, butterflies, drifting petals, an awake woodland companion, and decorative lanterns switched off.
