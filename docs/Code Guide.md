@@ -1,6 +1,6 @@
 # Source guide for the walkthrough
 
-All listed files implement real project features. The new source is on the `codex/lanternwood-3d` branch and is also synchronized to the MIDTERM working copy.
+All listed files implement real project features. This guide covers the current 3D game source.
 
 | File | Responsibility | What to show |
 | --- | --- | --- |

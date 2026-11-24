@@ -73,4 +73,4 @@ See [the source guide](docs/Code%20Guide.md) for a file-by-file explanation.
 
 ## Development history
 
-The original 2D desktop is preserved in baseline commit **8022581**. The 3D adaptation is developed on **codex/lanternwood-3d**, with working updates committed separately. No license has been added; upstream library licenses still apply.
+The project began as a 2D task desktop and evolved into an interactive 3D fairytale forest. The original prototype remains available in the Git history. No license has been added; upstream library licenses still apply.
