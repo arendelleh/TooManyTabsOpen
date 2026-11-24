@@ -12,8 +12,9 @@ using namespace std;
 constexpr int W=1100, H=720;
 struct Color { float r,g,b; };
 const Color bg{.055f,.075f,.13f}, panel{.10f,.13f,.21f}, ink{.91f,.94f,1}, muted{.61f,.68f,.79f}, mint{.40f,.88f,.73f}, blue{.48f,.66f,1};
-enum class Screen { Welcome, Desktop, Break };
+enum class Screen { Welcome, Desktop, Break, World, Ending };
 struct Task {string title, subtitle; array<string,3> steps; int done=0; bool later=false; };
+#include "task_data.hpp"
 array<Task,4> tasks;
 Screen screen=Screen::Welcome;
 int selected=0, winW=W,winH=H, vx=0,vy=0,vw=W,vh=H,lastTick=0;
@@ -22,11 +23,14 @@ float breathTime=0;
 string feedback="You do not have to do everything at once.";
 
 
+void resetWood();
+bool canAcknowledge();
+void noteStep();
+void noteBoundary();
+
 void reset(){
- tasks={{{"CS0045 Lab Exam","Start with a small piece of the exam.",{{"Read the Lab Exam instructions","Choose three target topics","Begin the codes/files little by little"}}},
- {"Research Group","Make the next conversation easier.",{{"Check the completed Technical Assessments","Write a summary of the findings","Plan a next step for the group"}}},
- {"Boost Study  Habit","Make room for a short review everyday.",{{"Choose one Course to review","Recall previous knowledge and study your notes","Write one practice question"}}},
- {"Personal time","Your needs belong on the list too.",{{"Plan a healthy meal or water break","Allot a time to do your hobbies","Have a proper sleep"}}}}};
+ resetWood();
+ tasks=makeTasks();
  selected=0;focus=quiet=paused=false;breathTime=0;screen=Screen::Welcome;
  feedback="You do not have to do everything at once.";
 }
@@ -35,12 +39,13 @@ void reset(){
 void completeStep(){
  Task &t=tasks[selected];
  if(t.later){feedback="Bring this task back from Later before working on it.";return;}
- if(t.done<3){++t.done;feedback=t.done==3?"This example task is complete. It is okay to stop here.":"One small step acknowledged. Choose your own pace.";}
+ if(!canAcknowledge())return;
+ if(t.done<3){++t.done;noteStep();feedback=t.done==3?"This example task is complete. It is okay to stop here.":"One small step acknowledged. Choose your own pace.";}
  else feedback="All three steps are already complete.";
 }
 
 
-void toggleLater(){tasks[selected].later=!tasks[selected].later;feedback=tasks[selected].later?"Set aside for later. Your progress is saved.":"Back on your desk. Start when you are ready.";}
+void toggleLater(){tasks[selected].later=!tasks[selected].later;noteBoundary();feedback=tasks[selected].later?"Set aside for later. Your progress stays for this session.":"Back on your desk. Start when you are ready.";}
 void color(Color c){glColor3f(c.r,c.g,c.b);}
 void rect(float x,float y,float w,float h,Color c){color(c);glBegin(GL_QUADS);glVertex2f(x,y);glVertex2f(x+w,y);glVertex2f(x+w,y+h);glVertex2f(x,y+h);glEnd();}
 void line(float x,float y,float a,float b,Color c){color(c);glBegin(GL_LINES);glVertex2f(x,y);glVertex2f(a,b);glEnd();}
@@ -67,7 +72,10 @@ void header(){
 
 
 
-void display(){
+#include "lanternwood.hpp"
+
+void displayLegacy(){
+ orthoUI();
  glClearColor(bg.r,bg.g,bg.b,1);glClear(GL_COLOR_BUFFER_BIT);glMatrixMode(GL_MODELVIEW);glLoadIdentity();header();
  if(screen==Screen::Welcome){
   rect(120,145,860,475,panel);text(175,208,"College can feel like too many tabs open.",ink,GLUT_BITMAP_HELVETICA_18);
@@ -123,15 +131,32 @@ void display(){
  glutSwapBuffers();
 }
 
+void display(){if(screen==Screen::Desktop)displayLegacy();else displayGame();}
+
 void keyboard(unsigned char key,int,int){
+ wood.keys[key]=true;
  if(key==27){glutLeaveMainLoop();return;}
  if(key=='r'||key=='R'){reset();glutPostRedisplay();return;}
- if(screen==Screen::Welcome){if(key==13)screen=Screen::Desktop;}
- else if(screen==Screen::Break){if(key=='b'||key=='B')screen=Screen::Desktop;else if(key==' ')paused=!paused;}
+ if(key=='j'||key=='J'){if(screen==Screen::World)screen=Screen::Desktop;else if(screen==Screen::Desktop)screen=Screen::World;glutPostRedisplay();return;}
+ if(screen==Screen::Ending){if(key==13)screen=Screen::World;glutPostRedisplay();return;}
+ if(screen==Screen::World){
+  if(key>='1'&&key<='4'){selected=key-'1';feedback="Follow the gold spark to acknowledge one small step.";}
+  switch(key){
+   case 'e':case 'E':case 'c':case 'C':interactWood();break;
+   case 'l':case 'L':toggleLater();break;
+   case 'f':case 'F':focus=!focus;break;
+   case 'm':case 'M':toggleQuiet();break;
+   case 'b':case 'B':screen=Screen::Break;breathTime=0;paused=false;break;
+   default:break;
+  }
+  glutPostRedisplay();return;
+ }
+ if(screen==Screen::Welcome){if(key==13)screen=Screen::World;}
+ else if(screen==Screen::Break){if(key=='b'||key=='B'||key=='e'||key=='E')leaveRest();else if(key==' ')paused=!paused;}
  else{
   if(key>='1'&&key<='4'){selected=key-'1';feedback="Choose a small step, or leave this task for later.";}
   switch(key){case 'c':case 'C':completeStep();break;case 'l':case 'L':toggleLater();break;
-   case 'f':case 'F':focus=!focus;break;case 'm':case 'M':quiet=!quiet;break;
+   case 'f':case 'F':focus=!focus;break;case 'm':case 'M':toggleQuiet();break;
    case 'b':case 'B':screen=Screen::Break;breathTime=0;paused=false;break;default:break;}
  }
 
@@ -139,11 +164,14 @@ void keyboard(unsigned char key,int,int){
 }
 
 void mouse(int buttonId,int state,int px,int py){
+ if(buttonId==GLUT_RIGHT_BUTTON){wood.dragging=state==GLUT_DOWN;wood.mouseX=px;return;}
+ if((buttonId==3||buttonId==4)&&state==GLUT_DOWN){wood.cameraDistance=std::clamp(wood.cameraDistance+(buttonId==3?-1.f:1.f),16.f,29.f);return;}
  if(buttonId!=GLUT_LEFT_BUTTON||state!=GLUT_DOWN)return;
  int top=winH-vy-vh;if(px<vx||px>=vx+vw||py<top||py>=top+vh)return;
  int x=(px-vx)*W/vw,y=(py-top)*H/vh;
- if(screen==Screen::Welcome){if(hit(x,y,175,431,250,42))keyboard(13,0,0);return;}
- if(screen==Screen::Break){if(hit(x,y,330,550,205,42))keyboard(' ',0,0);else if(hit(x,y,555,550,215,42))keyboard('b',0,0);return;}
+ if(screen==Screen::Welcome||screen==Screen::Ending){if(hit(x,y,95,390,315,42))keyboard(13,0,0);return;}
+ if(screen==Screen::World){for(int i=0;i<4;++i)if((!focus||i==selected)&&hit(x,y,27+i*268,93,252,48))keyboard('1'+i,0,0);return;}
+ if(screen==Screen::Break){if(hit(x,y,300,480,500,80))keyboard('b',0,0);else if(hit(x,y,440,230,220,220))keyboard(' ',0,0);return;}
  for(int i=0;i<4;++i)if((!focus||i==selected)&&hit(x,y,30+i*265,115,250,65))keyboard('1'+i,0,0);
  if(hit(x,y,55,495,245,42))keyboard('c',0,0);
  else if(hit(x,y,315,495,245,42))keyboard('l',0,0);
@@ -158,10 +186,11 @@ void reshape(int w,int h){
  glViewport(vx,vy,vw,vh);glMatrixMode(GL_PROJECTION);glLoadIdentity();glOrtho(0,W,H,0,-1,1);glMatrixMode(GL_MODELVIEW);
 }
 
-void timer(int){int now=glutGet(GLUT_ELAPSED_TIME);float dt=std::min((now-lastTick)/1000.f,.1f);lastTick=now;if(screen==Screen::Break&&!paused)breathTime+=dt;glutPostRedisplay();glutTimerFunc(16,timer,0);}
+void timer(int){int now=glutGet(GLUT_ELAPSED_TIME);float dt=std::min((now-lastTick)/1000.f,.1f);lastTick=now;worldTick(dt);if(screen==Screen::Break&&!paused)breathTime+=dt;glutPostRedisplay();glutTimerFunc(16,timer,0);}
 int main(int argc,char**argv){
  reset();
  if(argc>1&&std::string(argv[1])=="--self-test"){
+  logicTest=true;
   for(int i=0;i<8;++i){completeStep();}
   assert(tasks[0].done==3);
   selected=1;toggleLater();completeStep();assert(tasks[1].done==0);
@@ -169,11 +198,23 @@ int main(int argc,char**argv){
   reset();assert(selected==0&&!focus&&!quiet&&!paused&&screen==Screen::Welcome);
   for(const auto&t:tasks)assert(t.done==0&&!t.later);
   assert(hit(0,0,0,0,10,10)&&!hit(10,10,0,0,10,10));
-  std::cout<<"PASS: step limits, Later guard, restore, reset, hit boundaries\n";return 0;
+  logicTest=false;screen=Screen::World;
+  Vec3 spark=nextSpark(0);wood.x=0;wood.z=0;completeStep();assert(tasks[0].done==0);
+  wood.x=spark.x;wood.z=spark.z;completeStep();assert(tasks[0].done==1&&wood.lights==1);
+  toggleLater();assert(wood.lights==2);toggleLater();toggleLater();assert(wood.lights==2);
+  toggleQuiet();assert(wood.lights==3);toggleQuiet();toggleQuiet();assert(wood.lights==3);
+  wood.x=0;wood.z=0;interactWood();assert(screen==Screen::World);
+  wood.x=0;wood.z=6;interactWood();assert(screen==Screen::Ending);
+  reset();leaveRest();assert(wood.lights==1);leaveRest();assert(wood.lights==1);
+  reset();screen=Screen::World;wood.keys['w']=true;worldTick(100);assert(std::hypot(wood.x,wood.z)<9.201f);
+  reset();assert(wood.lights==0&&!wood.rest&&!wood.boundary&&!wood.silence);
+  std::cout<<"PASS: 3D proximity, story lanterns, boundary and quiet limits, sanctuary, rest, movement, and reset;  step limits, Later guard, restore, reset, hit boundaries\n";return 0;
  }
 
- glutInit(&argc,argv);glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB);glutInitWindowSize(W,H);
- glutCreateWindow("Too Many Tabs Open");glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+ glutInit(&argc,argv);glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB|GLUT_DEPTH|GLUT_MULTISAMPLE);glutInitWindowSize(W,H);
+ glutCreateWindow("Too Many Tabs Open | The Lanternwood - 3D");glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+ glutIgnoreKeyRepeat(1);glutKeyboardUpFunc(keyUp);glutSpecialFunc(specialKey);glutMotionFunc(worldMotion);
  glutDisplayFunc(display);glutReshapeFunc(reshape);glutKeyboardFunc(keyboard);glutMouseFunc(mouse);
  lastTick=glutGet(GLUT_ELAPSED_TIME);glutTimerFunc(16,timer,0);glutMainLoop();return 0;
 }
+

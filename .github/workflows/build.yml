@@ -1,0 +1,23 @@
+name: Build and gameplay checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install graphics development libraries
+        run: sudo apt-get update && sudo apt-get install -y freeglut3-dev libglu1-mesa-dev
+      - name: Validate task content and generated source
+        run: |
+          python3 tools/generate_tasks.py
+          git diff --exit-code -- task_data.hpp
+          python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Compile the 3D game
+        run: g++ -std=c++17 -O2 -Wall -Wextra -pedantic main.cpp -o TooManyTabsOpen -lglut -lGLU -lGL
+      - name: Check gameplay without opening a window
+        run: ./TooManyTabsOpen --self-test

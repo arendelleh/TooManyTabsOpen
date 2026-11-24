@@ -1,7 +1,20 @@
+param([switch]$Test, [string]$Output = 'TooManyTabsOpen.exe')
 $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
-$compiler = 'C:\msys64\mingw64\bin\g++.exe'
+$compiler = 'C:\msys64\ucrt64\bin\g++.exe'
+if (!(Test-Path $compiler)) { $compiler = 'C:\msys64\mingw64\bin\g++.exe' }
 if (!(Test-Path $compiler)) { $compiler = (Get-Command g++ -ErrorAction Stop).Source }
-& $compiler -std=c++17 -Wall -Wextra -pedantic main.cpp -o TooManyTabsOpen.exe -lfreeglut -lopengl32
+$env:PATH = (Split-Path $compiler) + ';' + $env:PATH
+$python = Join-Path (Split-Path $compiler) 'python.exe'
+if (!(Test-Path $python)) { $python = (Get-Command python -ErrorAction Stop).Source }
+& $python tools/generate_tasks.py
+if ($LASTEXITCODE -ne 0) { throw 'Task content validation failed.' }
+& $compiler -std=c++17 -O2 -Wall -Wextra -pedantic main.cpp -o $Output -lfreeglut -lglu32 -lopengl32
 if ($LASTEXITCODE -ne 0) { throw 'Compilation failed.' }
 Write-Host 'Built successfully. Run .\run.ps1'
+if ($Test) {
+    & $python -m unittest discover -s tests -p 'test_*.py'
+    if ($LASTEXITCODE -ne 0) { throw 'Python content checks failed.' }
+    & (Join-Path $PSScriptRoot $Output) --self-test
+    if ($LASTEXITCODE -ne 0) { throw 'Gameplay checks failed.' }
+}

@@ -7,3 +7,6 @@ local-build/
 *.original.*
 main.original.cpp.txt
 TESTING.original.csv
+__pycache__/
+*.pyc
+artifacts/

@@ -1,0 +1,28 @@
+{
+  "tasks": [
+    {
+      "id": "coursework",
+      "title": "CS0045 Lab Exam",
+      "subtitle": "Start with one small piece of the exam.",
+      "steps": ["Read the lab exam instructions", "Choose three topics to review", "Start one small piece of code"]
+    },
+    {
+      "id": "group_work",
+      "title": "Research Group",
+      "subtitle": "Make the next conversation easier.",
+      "steps": ["Check the completed assessments", "Summarize one important finding", "Plan one next step with the group"]
+    },
+    {
+      "id": "study",
+      "title": "Study Habits",
+      "subtitle": "Make room for a short review.",
+      "steps": ["Choose one course to review", "Read one section of your notes", "Write one practice question"]
+    },
+    {
+      "id": "personal",
+      "title": "Personal Time",
+      "subtitle": "Your needs belong on the list too.",
+      "steps": ["Consider a water or meal break", "Make a little room for a hobby", "Plan a comfortable time to rest"]
+    }
+  ]
+}
