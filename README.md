@@ -1,7 +1,7 @@
 # Too Many Tabs Open
 
 ![C++17](assets/badges/cpp.svg) ![GLSL](assets/badges/glsl.svg) ![Python](assets/badges/python.svg) ![PowerShell](assets/badges/powershell.svg)
-[![Build and gameplay checks](https://github.com/arendelleh/Too-Many-Tabs-Open/actions/workflows/build.yml/badge.svg)](https://github.com/arendelleh/Too-Many-Tabs-Open/actions/workflows/build.yml)
+[![Build and gameplay checks](https://github.com/arendelleh/TooManyTabsOpen/actions/workflows/build.yml/badge.svg)](https://github.com/arendelleh/TooManyTabsOpen/actions/workflows/build.yml)
 
 A full 3D fairytale reflection game about academic overwhelm and making room for one small choice.
 
@@ -63,4 +63,5 @@ See [the source guide](docs/Code%20Guide.md) for a file-by-file explanation.
 ## Development history
 
 The original 2D desktop is preserved in baseline commit **8022581**. The 3D adaptation is developed on **codex/lanternwood-3d**, with working updates committed separately. No license has been added; upstream library licenses still apply.
+
 
