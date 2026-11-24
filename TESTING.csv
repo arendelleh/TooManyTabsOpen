@@ -1,0 +1,19 @@
+ID,Action,Expected result,Actual result,Status
+1,Press Enter on welcome,Desktop appears,,NOT RUN
+2,Click third tab,Quiz preparation is selected,,NOT RUN
+3,Press 2,Group project is selected,,NOT RUN
+4,Press C once,One selected task step is completed,,NOT RUN
+5,Press C repeatedly,Progress stops at three steps,,NOT RUN
+6,Press L then C on an unfinished task,Task is postponed and completion is blocked,,NOT RUN
+7,Press L again then C,Task is restored and can progress,,NOT RUN
+8,Toggle F twice,Other tabs hide then return,,NOT RUN
+9,Press 4 during focus,Personal time becomes focused task,,NOT RUN
+10,Toggle M twice,Message hides then returns,,NOT RUN
+11,Click breathing break,Breathing screen animates,,NOT RUN
+12,Press Space during break,Animation pauses,,NOT RUN
+13,Press Space again,Animation resumes,,NOT RUN
+14,Press B during break,Desktop returns with task progress preserved,,NOT RUN
+15,Resize window then click controls,Controls remain aligned and aspect ratio is preserved,,NOT RUN
+16,Click blank area or press an unused key,No task progress changes,,NOT RUN
+17,Press R after several changes,Welcome returns and all state resets,,NOT RUN
+18,Press Esc,Window closes normally,,NOT RUN

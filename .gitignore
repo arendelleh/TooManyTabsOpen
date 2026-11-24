@@ -1,0 +1,9 @@
+*.exe
+*.dll
+*.o
+*.obj
+build/
+local-build/
+*.original.*
+main.original.cpp.txt
+TESTING.original.csv
