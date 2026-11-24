@@ -12,7 +12,7 @@ A full 3D fairytale reflection game about academic overwhelm and making room for
 
 Choose Summer, Autumn, or Snowfall independently of day and night. Summer has blossoms and butterflies; Autumn changes the canopy and drifting leaves; Snowfall covers the ground and crowns with snow. Choose a Petal Fairy, Woodland Elf, or Moon Mage in the storybook side panel.
 
-Four task scrolls preserve the original college-desktop concept. Restore lost pages to a study book, carry planks to repair a bridge, plant seeds that grow into flowers, or prepare tea beside the pond. Each activity changes an object in the world. You can also set a concern aside, quiet the message moth, or rest. Light three story lanterns and return to the sanctuary. There is no countdown or failure penalty. The original desktop remains available as a task journal.
+Four task scrolls preserve the original college-desktop concept. Restore lost pages to a study book, carry planks to repair a bridge, plant seeds that grow into flowers, or prepare tea beside the pond. Each activity changes an object in the world. You can also set a concern aside, quiet the message moth, or rest. Light three story lanterns and return to the sanctuary. There is no countdown or failure penalty. The keeper journal presents the four tabs as a two-page storybook over the living forest. Its Go to activity button walks to the task object; it does not award progress by itself.
 
 The lantern count is fictional story progression, not a mental-health score. The game does not diagnose conditions or measure well-being. Progress lasts for the current session.
 
