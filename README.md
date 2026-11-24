@@ -14,6 +14,8 @@ Captured from the game. Use the character panel to change seasons and the day/ni
 | ![Welcome to the forest](docs/screenshots/welcome.png) | ![Snowfall day and character chooser](docs/screenshots/snowfall-day.png) |
 | **The Lanternwood at night** | **The quiet glade in Autumn** |
 | ![Snowfall night with fairy lights](docs/screenshots/lanternwood-night.png) | ![Autumn quiet glade](docs/screenshots/quiet-glade.png) |
+| **Summer night** | **Moon Mage character** |
+| ![Summer Lanternwood with fairy lights](docs/screenshots/summer-night.png) | ![Moon Mage in the Daydream Grove](docs/screenshots/moon-mage.png) |
 
 ## Two moods, one story
 
