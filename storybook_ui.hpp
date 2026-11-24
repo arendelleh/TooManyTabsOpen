@@ -47,6 +47,7 @@ void guideDrawer(){
 bool handleWorldClick(int x,int y){
  if(hit(x,y,20,20,292,73))return true;
  if(hit(x,y,20,108,140,34)&&!wood.taskPanel){openDrawer(0);return true;}
+ if(hit(x,y,944,64,136,34)){ambience.toggle();return true;}
  if(hit(x,y,944,20,136,34)){openDrawer(1);return true;}
  if(wood.wardrobe){if(wardrobeClick(x,y))return true;return true;}
  if(wood.help){
@@ -79,6 +80,7 @@ void gameHUD(){
  uiText(40,73,string(seasonName())+" / "+(wood.day?"Daydream Grove":"Lanternwood"),paper,12);
  if(screen==Screen::World){
   storyButton(944,20,136,"Menu [H]",wood.help);
+  storyButton(944,64,136,ambience.failed?"Music: error [V]":ambience.playing?"Music: on [V]":"Music: off [V]",ambience.playing);
   if(!wood.taskPanel)storyButton(20,108,140,"Tabs [T]  "+std::to_string(openTabCount()));
   storyPlate(395,20,310,59);
   uiText(413,43,std::to_string(openTabCount())+" open / "+std::to_string(asideTabCount())+" set aside",paper,12);

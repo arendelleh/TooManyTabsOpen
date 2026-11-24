@@ -160,7 +160,7 @@ void keyboard(unsigned char key,int,int){
   }
   glutPostRedisplay();return;
  }
- if(screen==Screen::Welcome){if(key==13)screen=Screen::World;}
+ if(screen==Screen::Welcome){if(key==13){ambience.enterForest();screen=Screen::World;}}
  else if(screen==Screen::Break){if(key=='b'||key=='B'||key=='e'||key=='E')leaveRest();else if(key==' ')paused=!paused;}
  else{
   if(key>='1'&&key<='4'){selected=key-'1';feedback="Choose a small step, or leave this task for later.";}
@@ -198,6 +198,7 @@ void reshape(int w,int h){
 void timer(int){int now=glutGet(GLUT_ELAPSED_TIME);float dt=std::min((now-lastTick)/1000.f,.1f);lastTick=now;worldTick(dt);if(screen==Screen::Break&&!paused)breathTime+=dt;glutPostRedisplay();glutTimerFunc(16,timer,0);}
 int main(int argc,char**argv){
  reset();
+ if(argc>1&&std::string(argv[1])=="--audio-check"){bool ok=ambience.start();ambience.stop();std::cout<<(ok?"PASS: audio asset found beside executable and playback accepted\n":"FAIL: audio asset missing or playback unavailable\n");return ok?0:1;}
  if(argc>1&&std::string(argv[1])=="--self-test"){
   logicTest=true;
   for(int i=0;i<8;++i){completeStep();}

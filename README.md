@@ -48,7 +48,7 @@ The tab count represents unfinished thoughts, not a stress score. Focus dims the
 | Right-drag / wheel | Orbit / zoom the 3D camera |
 | H / F11 / R / Esc | Forest Guide and settings / full-screen / restart / exit |
 
-All game text is English. The game starts full-screen and fills the display without fixed-aspect side bars; F11 switches to a resizable window. Sound starts off. The original 24-second soft major-key harp loop is synthesized by tools/generate_ambience.py; it uses no downloaded recordings. Sound playback is currently implemented for Windows. Other platforms retain the visuals and gameplay.
+All game text is English. The game starts full-screen and fills the display without fixed-aspect side bars; F11 switches to a resizable window. Music starts when you enter the forest, unless you have already switched it off. A visible Music button and V toggle playback. The WAV path resolves beside the executable, independent of the launch directory. The original 24-second soft major-key harp loop is synthesized by tools/generate_ambience.py; it uses no downloaded recordings. Sound playback is currently implemented for Windows. Other platforms retain the visuals and gameplay.
 
 ## What each language does
 
