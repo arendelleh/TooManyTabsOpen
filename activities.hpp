@@ -24,7 +24,7 @@ void performActivity(){
  Vec3 p=activityTarget(selected);
  if(!closeTo(p.x,p.z)){feedback="Walk to the marked object. "+activityVerb(selected)+".";return;}
  if(selected<3&&!wood.carrying[selected]){
-  wood.carrying[selected]=true;wood.taskPanel=true;
+  wood.carrying[selected]=true;
   feedback=selected==0?"Page collected. Carry it to the study book.":selected==1?"Plank collected. Carry it to the broken bridge.":"Seed collected. Walk to the marked flower bed.";
   return;
  }

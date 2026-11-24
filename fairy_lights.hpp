@@ -51,7 +51,7 @@ void fairyGlowPass(){
  for(int i=0;i<4;++i){Vec3 p=gardens[i];halo({p.x+1.8f,1.78f,p.z},.78f,{1,.67f,.25f},power);}
  for(int i=0;i<3;++i)if(i<wood.lights)halo({(i-1)*.63f,.7f,6},.65f,{1,.76f,.32f},power);
  // Floating shimmers form an animated trail around the keeper and across the clearing.
- for(int i=0;i<(wood.day?20:85);++i){float a=i*2.399f+wood.time*.1f,r=.8f+(i%13)*.65f;
+ for(int i=0;i<motionBudget(wood.day?20:85);++i){float a=i*2.399f+wood.time*.1f,r=.8f+(i%13)*.65f;
   Vec3 p{r*std::cos(a),.5f+(i%11)*.25f+.12f*std::sin(wood.time+i),r*.7f*std::sin(a)};
   float pulse=std::pow(.5f+.5f*std::sin(wood.time*(1.1f+(i%4)*.2f)+i*2.1f),5.f);
   halo(p,.12f+pulse*.18f,i%3==0?Color{.77f,.58f,1}:Color{1,.85f,.47f},(wood.day?.16f:1.f)*(.25f+pulse*.75f));
@@ -60,7 +60,7 @@ void fairyGlowPass(){
  glDisable(GL_TEXTURE_2D);
  // Four-point glints remain crisp inside the diffuse halos.
  glBegin(GL_LINES);
- for(int i=0;i<(wood.day?8:28);++i){float a=i*2.399f+wood.time*.05f,r=1+(i%9)*.8f;float x=r*std::cos(a),z=r*.7f*std::sin(a),y=.7f+(i%7)*.34f;
+ for(int i=0;i<motionBudget(wood.day?8:28);++i){float a=i*2.399f+wood.time*.05f,r=1+(i%9)*.8f;float x=r*std::cos(a),z=r*.7f*std::sin(a),y=.7f+(i%7)*.34f;
   float pulse=std::pow(std::max(0.f,std::sin(wood.time*1.3f+i*3.2f)),10.f);glColor4f(1,.85f,.55f,pulse);
   glVertex3f(x-.10f*pulse,y,z);glVertex3f(x+.10f*pulse,y,z);glVertex3f(x,y-.14f*pulse,z);glVertex3f(x,y+.14f*pulse,z);
  }glEnd();

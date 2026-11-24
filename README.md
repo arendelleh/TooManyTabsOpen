@@ -25,22 +25,28 @@ Open PowerShell in this project folder:
 
 The build script prefers **C:\msys64\ucrt64\bin**, then checks the original mingw64 location or a compiler on PATH. It needs C++17, freeglut, GLU, OpenGL, and Python 3. Python validates task data before compilation. Keep the shader and audio assets with the application; run.ps1 sets the working directory and runtime DLL path.
 
+## A quieter interface
+
+The forest has no floating text labels or permanent command bar. A single contextual card shows the next action. Tabs and the Forest Guide open only when requested; drawers do not stack. Cream text on opaque moss-green panels uses a solid Segoe UI font rendered at runtime on Windows, with a GLUT fallback on other systems. No font file is redistributed.
+
+The tab count represents unfinished thoughts, not a stress score. Focus dims the other task spaces and reduces shimmer motion. Setting a tab aside preserves its progress; fewer open tabs also reduce particle activity.
+
 ## Clickable controls
 
 | Input | Action |
 | --- | --- |
 | Enter | Start or continue exploring |
 | Click ground / WASD | Walk to a point / walk manually |
-| Click scroll or left-hand task button | Select its task and walk toward the next spark |
+| Click scroll or choose a task in Tabs | Select its task and walk toward the next spark |
 | E or Interact button | Perform the displayed action near the marked object: collect, carry, place, plant, or prepare tea |
 | L / F / M | Set aside or restore a tab / Focus / quiet the message moth |
 | B or pond | Visit the quiet glade |
-| T / J | Toggle compact task details / original desktop journal |
+| T or Tab / J | Open or close the Tabs drawer / original desktop journal |
 | C / K | Open the character and season panel / cycle seasons |
 | N or Day/Night button | Switch themes without losing progress |
-| V or Sound button | Toggle the original background ambience |
+| V or Sound button | Toggle the original background ambience (also in the Forest Guide) |
 | Right-drag / wheel | Orbit / zoom the 3D camera |
-| H / F11 / R / Esc | Help / full-screen / restart / exit |
+| H / F11 / R / Esc | Forest Guide and settings / full-screen / restart / exit |
 
 All game text is English. The game starts full-screen and fills the display without fixed-aspect side bars; F11 switches to a resizable window. Sound starts off. The original 24-second soft major-key harp loop is synthesized by tools/generate_ambience.py; it uses no downloaded recordings. Sound playback is currently implemented for Windows. Other platforms retain the visuals and gameplay.
 

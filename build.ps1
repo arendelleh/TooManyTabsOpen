@@ -10,7 +10,7 @@ if (!(Test-Path $python)) { $python = (Get-Command python -ErrorAction Stop).Sou
 & $python tools/generate_tasks.py
 if ($LASTEXITCODE -ne 0) { throw 'Task content validation failed.' }
 if (!(Test-Path 'assets/audio/forest_ambience.wav')) { & $python tools/generate_ambience.py }
-& $compiler -std=c++17 -O2 -Wall -Wextra -pedantic main.cpp -o $Output -lfreeglut -lglu32 -lopengl32 -lwinmm
+& $compiler -std=c++17 -O2 -Wall -Wextra -pedantic main.cpp -o $Output -lfreeglut -lglu32 -lopengl32 -lwinmm -lgdi32
 if ($LASTEXITCODE -ne 0) { throw 'Compilation failed.' }
 Write-Host 'Built successfully. Run .\run.ps1'
 if ($Test) {

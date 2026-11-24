@@ -8,6 +8,8 @@ All listed files implement real project features. The new source is on the `code
 | lanternwood.hpp | 3D camera, fairy model, task scrolls, sanctuary, clickable UI, ray projection, and movement | scene3D, sceneClick, handleWorldClick, worldTick |
 | activities.hpp | Contextual E actions, pickup/delivery targets, and in-world rest | activityTarget, performActivity, nearbyPrompt |
 | activity_models.hpp | Collectible pages, planks, seeds, growing flowers, and visible task progress | activityModels and carried objects |
+| storybook_ui.hpp | Mutually exclusive drawers, open-tab counts, and a single contextual action card | tabsDrawer, guideDrawer, actionReady, handleWorldClick |
+| interface_font.hpp | Windows runtime Segoe UI texture atlas and portable GLUT fallback | prepare and draw |
 | characters.hpp | Three keeper models and the clickable character/season panel | fairy, wardrobePanel, wardrobeClick |
 | forest_detail.hpp | Seasonal broadleaf trees, branching trunks, flowers, pond, bench, deer, and butterflies | broadleaf, flowerPatch, forestDetails |
 | fairy_lights.hpp | Hanging lantern models, sagging light strings, generated glow texture, additive halos, and animated glints | lantern, fairyLightGeometry, fairyGlowPass |

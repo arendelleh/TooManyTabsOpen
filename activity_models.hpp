@@ -19,11 +19,11 @@ void activityModels(){
  // A short stream and the three repaired sections of a support bridge.
  ball(5,.12f,-3.5f,1.3f,.025f,.6f,wood.season==2?Color{.66f,.82f,.91f}:Color{.31f,.59f,.64f});
  for(int n=0;n<tasks[1].done;++n)cube(4.3f+n*.65f,.28f,-3.5f,.58f,.10f,.85f,{.62f,.42f,.25f});
- ball(-7,.22f,4.8f,.25f,.30f,.22f,{.68f,.49f,.25f});label3(-7.5f,.95f,4.8f,"SEED POUCH",{.96f,.83f,.50f});
- if(tasks[3].done<1){ball(6.5f,.30f,5,.25f,.32f,.25f,{.29f,.58f,.32f});label3(6.0f,1.05f,5,"TEA LEAVES",{.88f,.91f,.65f});}
+ ball(-7,.22f,4.8f,.25f,.30f,.22f,{.68f,.49f,.25f});
+ if(tasks[3].done<1){ball(6.5f,.30f,5,.25f,.32f,.25f,{.29f,.58f,.32f});}
  if(tasks[3].done==3){cone(-7,.58f,2.7f,.12f,.17f,{.91f,.78f,.61f});ring3(-7,.77f,2.7f,.11f,{.87f,.73f,.51f});}
  // The objective marker is a navigation cue, not a decorative lamp.
- if(tasks[selected].done<3&&!tasks[selected].later){Vec3 p=activityTarget(selected);ring3(p.x,.20f,p.z,.48f,{1,.79f,.34f});label3(p.x-.75f,1.2f,p.z,activityVerb(selected),{1,.88f,.62f});}
+ if(tasks[selected].done<3&&!tasks[selected].later){Vec3 p=activityTarget(selected);ring3(p.x,.20f,p.z,.48f,{1,.79f,.34f});}
  if(wood.carrying[selected]|| (selected==3&&tasks[3].done>0&&tasks[3].done<3)){
   Vec3 p{wood.x,1.4f,wood.z};
   if(selected==0)pageModel(p,.44f);

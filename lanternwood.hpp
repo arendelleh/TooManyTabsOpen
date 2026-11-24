@@ -16,6 +16,15 @@ struct Woodland {
 } wood;
 const Vec3 gardens[4]={{-5,0,-3.5f},{5,0,-3.5f},{-5,0,3.5f},{5,0,3.5f}};
 const Color accents[4]={{.72f,.58f,1},{1,.69f,.43f},{.43f,.84f,.75f},{.97f,.58f,.73f}};
+int openTabCount(){int n=0;for(const auto&t:tasks)if(!t.later&&t.done<3)++n;return n;}
+int asideTabCount(){int n=0;for(const auto&t:tasks)if(t.later&&t.done<3)++n;return n;}
+void openDrawer(int which){
+ bool was=which==0?wood.taskPanel:which==1?wood.help:wood.wardrobe;
+ wood.taskPanel=wood.help=wood.wardrobe=false;
+ if(which==0)wood.taskPanel=!was;else if(which==1)wood.help=!was;else wood.wardrobe=!was;
+}
+void selectTab(int i){selected=i;wood.taskPanel=false;wood.help=false;wood.wardrobe=false;}
+int motionBudget(int normal){if(normal==0)return 0;float room=.3f+.7f*openTabCount()/4.f;return std::max(2,int(normal*room*(focus?.2f:1.f)));}
 bool logicTest=false;
 Vec3 activityTarget(int task);
 void fairy();
@@ -70,8 +79,9 @@ void rounded(float x,float y,float w,float h,Color c){
  for(int k=0;k<4;++k)for(int j=0;j<=8;++j){float a=(k*90+180+j*90.f/8)*TAU/360;glVertex2f(cx[k]+r*std::cos(a),cy[k]+r*std::sin(a));}
  glVertex2f(x,y+r);glEnd();
 }
+#include "interface_font.hpp"
 void wrapText(float x,float y,const string&s,int limit=53,Color c=ink){
- string line,word;auto flush=[&](){text(x,y,line,c,GLUT_BITMAP_HELVETICA_12);y+=19;line.clear();};
+ string line,word;auto flush=[&](){uiText(x,y,line,c,13);y+=21;line.clear();};
  for(size_t k=0;k<=s.size();++k){char ch=k<s.size()?s[k]:' ';if(ch==' '){if(line.size()+word.size()+1>size_t(limit))flush();if(!line.empty())line+=' ';line+=word;word.clear();}else word+=ch;}
  if(!line.empty())flush();
 }
@@ -122,12 +132,12 @@ void scrollModel(int i){
  cube(-1.21f,0,0,.15f,1.5f,.19f,ac);cube(1.21f,0,0,.15f,1.5f,.19f,ac);
  cube(-.74f,.33f,.08f,.60f,.08f,.06f,ac);cube(0,.07f,.08f,1.65f,.045f,.05f,{.45f,.39f,.38f});cube(-.2f,-.16f,.08f,1.25f,.045f,.05f,{.50f,.43f,.4f});
  glPopMatrix();
- label3(p.x-1.35f,3.05f,p.z,tasks[i].title,i==selected?Color{1,.84f,.48f}:Color{.75f,.8f,.85f});
+
  if(i==selected&&tasks[i].done<3&&!tasks[i].later){
   Vec3 s=nextSpark(i);float yy=.8f+.12f*std::sin(wood.time*3);
   ball(s.x,yy,s.z,.16f,.24f,.16f,{1,.8f,.3f},1);
   ring3(s.x,.17f,s.z,.43f,{1,.76f,.3f});
-  label3(s.x-.45f,1.5f,s.z,"E: small step",{1,.87f,.58f});
+
  }
 }
 void sanctuary(){
@@ -135,7 +145,7 @@ void sanctuary(){
  cube(0,2.6f,6,2.4f,.15f,.24f,{.69f,.52f,.43f});
  ring3(0,.18f,6,1.7f,wood.lights>=3?Color{1,.8f,.37f}:Color{.42f,.47f,.5f});
  for(int i=0;i<3;++i){float x=(i-1)*.63f;cube(x,1.5f,6,.025f,1.8f,.025f,{.52f,.4f,.4f});ball(x,.7f+.07f*std::sin(wood.time+i),6,.18f,.26f,.18f,i<wood.lights?Color{1,.76f,.32f}:Color{.23f,.28f,.36f},i<wood.lights?decorativeEmission(.8f):0);}
- label3(-1.05f,3.25f,6,wood.lights>=3?"SANCTUARY - E to rest":"THE PATH HOME",{1,.87f,.6f});
+
 }
 void scene3D(){
  skyBackdrop();glDepthMask(GL_TRUE);glEnable(GL_DEPTH_TEST);glClear(GL_DEPTH_BUFFER_BIT);
@@ -165,9 +175,9 @@ void scene3D(){
  }
  // Fireflies are time-driven 3D points. Focus quiets the visual motion.
  forestShader.stop();glDisable(GL_LIGHTING);glPointSize(3);glBegin(GL_POINTS);
- for(int i=0;i<(wood.day?0:90);++i){float t=wood.time*(focus?.12f:.30f),aa=i*2.399f+t;float r=2+float(i%11)*.72f;color({.85f,.79f,.45f});glVertex3f(r*std::cos(aa),.7f+float(i%9)*.35f+.2f*std::sin(t+i),r*.8f*std::sin(aa));}glEnd();glEnable(GL_LIGHTING);forestShader.begin(wood.day?1.f:0.f);
+ for(int i=0;i<motionBudget(wood.day?0:90);++i){float t=wood.time*(focus?.12f:.30f),aa=i*2.399f+t;float r=2+float(i%11)*.72f;color({.85f,.79f,.45f});glVertex3f(r*std::cos(aa),.7f+float(i%9)*.35f+.2f*std::sin(t+i),r*.8f*std::sin(aa));}glEnd();glEnable(GL_LIGHTING);forestShader.begin(wood.day?1.f:0.f);
  // The notification is a drifting message moth, quieted by the original M action.
- if(!quiet){float mx=3.2f*std::sin(wood.time*.4f);ball(mx,4.6f,1,.2f,.10f,.10f,{.87f,.63f,.7f});label3(mx-.8f,4.95f,1,"Any updates?  [M] quiet",{.95f,.72f,.79f});}
+ if(!quiet){float mx=3.2f*std::sin(wood.time*.4f);ball(mx,4.6f,1,.2f,.10f,.10f,{.87f,.63f,.7f});}
  fairy();
  activityModels();
  if(screen==Screen::Break){float amount=(1-std::cos(breathTime*TAU/8))/2;ring3(-7,.18f,.2f,.45f+amount*.65f,{.62f,.85f,.83f});}
@@ -191,7 +201,7 @@ bool sceneClick(int x,int y){
  if(projectedNear({7,1,-.7f},x,y,28)){feedback="A quiet companion. You can pause here without finishing another task.";return true;}
  if(wood.lights>=3&&projectedNear({0,1.3f,6},x,y,42)){if(closeTo(0,6,2))interactWood();else walkToward(0,6);return true;}
  for(int i=0;i<4;++i)if(projectedNear({gardens[i].x,2,gardens[i].z},x,y,48)||projectedNear(nextSpark(i),x,y,24)){
-  selected=i;wood.taskPanel=true;wood.wardrobe=false;Vec3 p=nextSpark(i);walkToward(p.x,p.z);feedback="Walking to this scroll. Read the step, then choose what feels useful.";return true;
+  selectTab(i);Vec3 p=nextSpark(i);walkToward(p.x,p.z);feedback="Walking to this scroll. Read the step, then choose what feels useful.";return true;
  }
  double ax,ay,az,bx,by,bz;double wx=vx+double(x)*vw/W,wy=vy+double(H-y)*vh/H;
  if(gluUnProject(wx,wy,0,wood.model,wood.projection,wood.viewport,&ax,&ay,&az)&&gluUnProject(wx,wy,1,wood.model,wood.projection,wood.viewport,&bx,&by,&bz)&&std::fabs(by-ay)>.001){
@@ -202,81 +212,10 @@ bool sceneClick(int x,int y){
 }
 void uiActionButton(int x,int y,int w,const string&label,bool active=false){
  rounded(float(x),float(y),float(w),33,active?Color{.26f,.40f,.35f}:Color{.18f,.23f,.25f});
- text(x+10.f,y+22.f,label,{.96f,.91f,.78f},GLUT_BITMAP_HELVETICA_12);
+ uiText(x+12.f,y+22.f,label,{.98f,.94f,.83f},12);
 }
 #include "characters.hpp"
-bool handleWorldClick(int x,int y){
- if(hit(x,y,20,255,175,33)){wood.wardrobe=!wood.wardrobe;wood.taskPanel=false;return true;}
- if(wardrobeClick(x,y))return true;
- if(hit(x,y,820,20,133,33)){toggleDay();return true;}
- if(hit(x,y,965,20,110,33)){wood.help=!wood.help;return true;}
- for(int i=0;i<4;++i)if(hit(x,y,20,90+i*38,175,32)){selected=i;wood.taskPanel=true;wood.wardrobe=false;Vec3 p=nextSpark(i);walkToward(p.x,p.z);return true;}
- if(hit(x,y,831,425,244,38)&&wood.taskPanel){wood.taskPanel=false;return true;}
- if(hit(x,y,173,626,110,33)){interactWood();return true;}
- if(hit(x,y,293,626,110,33)){toggleLater();return true;}
- if(hit(x,y,413,626,110,33)){focus=!focus;return true;}
- if(hit(x,y,533,626,110,33)){toggleQuiet();return true;}
- if(hit(x,y,653,626,110,33)){enterRest();return true;}
- if(hit(x,y,773,626,145,33)){wood.taskPanel=!wood.taskPanel;return true;}
- if(wood.taskPanel&&hit(x,y,807,265,275,200))return true;
- if(wood.help&&hit(x,y,280,170,540,230))return true;
- return sceneClick(x,y);
-}
-void gameHUD(){
- const Color card{.085f,.10f,.16f},gold{1,.81f,.49f},cream{.96f,.90f,.80f};
- text(30,39,"TOO MANY TABS OPEN",cream,GLUT_BITMAP_HELVETICA_18);
- text(30,61,string(wood.season==0?"SUMMER":wood.season==1?"AUTUMN":"SNOWFALL")+" / "+(wood.day?"THE DAYDREAM GROVE":"THE LANTERNWOOD"),gold,GLUT_BITMAP_HELVETICA_12);
- text(490,42,std::to_string(wood.lights)+" / 3 story lanterns",gold,GLUT_BITMAP_HELVETICA_12);
- uiActionButton(680,20,125,ambience.playing?"Sound: on [V]":"Sound: off [V]",ambience.playing);
- uiActionButton(820,20,133,wood.day?"Night [N]":"Day [N]");if(screen==Screen::World)uiActionButton(965,20,110,"Help [H]",wood.help);
- if(screen==Screen::Welcome||screen==Screen::Ending){
-  rounded(65,120,530,454,card);
-  text(95,168,screen==Screen::Ending?"A LITTLE MORE ROOM":"Once upon an open tab...",cream,GLUT_BITMAP_TIMES_ROMAN_24);
-  wrapText(95,210,screen==Screen::Ending?"The lanterns are lit. Your unfinished tasks can wait here. You do not have to finish everything to deserve a pause.":"A student opened so many tabs that the thoughts became a forest. You are its little keeper. Find a little room among the branches.",65,cream);
-  text(95,290,screen==Screen::Ending?"You can keep exploring, or close this chapter.":"Light three story lanterns, then return to the sanctuary.",gold,GLUT_BITMAP_HELVETICA_12);
-  wrapText(95,325,"Take a small step, set a tab aside, quiet the message moth, or rest. Each is a valid way forward. There is no timer and nothing to lose.",65);
-  button(95,390,315,screen==Screen::Ending?"Keep exploring [Enter]":"Enter the forest [Enter]",true);
-  text(95,460,"WASD walk   Right-drag orbit   E interact",cream,GLUT_BITMAP_HELVETICA_12);
-  text(95,485,"Fictional reflection game, not a mental-health assessment.",muted,GLUT_BITMAP_HELVETICA_12);
-  text(95,505,"If you need support, a trusted person or campus counselor",muted,GLUT_BITMAP_HELVETICA_12);
-  text(95,523,"can be a place to start.",muted,GLUT_BITMAP_HELVETICA_12);
- }else if(screen==Screen::Break){
-  rounded(270,535,560,137,card);
-  text(294,563,"THE QUIET GLADE",cream,GLUT_BITMAP_TIMES_ROMAN_24);
-  text(294,590,"Watch the pond ripple, or simply rest your gaze.",muted,GLUT_BITMAP_HELVETICA_12);
-  uiActionButton(294,618,195,paused?"Resume glow [Space]":"Pause glow [Space]");
-  uiActionButton(507,618,295,"Return to the forest [B / E]");
- }else{
-  // Small, actual buttons replace the large instructions covering the forest.
-  for(int i=0;i<4;++i){int yy=90+i*38;uiActionButton(20,yy,175,std::to_string(i+1)+"  "+tasks[i].title,i==selected);}
-  uiActionButton(20,255,175,"Character / Season [C]",wood.wardrobe);
-  rounded(161,615,770,57,card);
-  uiActionButton(173,626,110,"Interact [E]");
-  uiActionButton(293,626,110,tasks[selected].later?"Bring back [L]":"Later [L]");
-  uiActionButton(413,626,110,"Focus [F]",focus);
-  uiActionButton(533,626,110,quiet?"Quiet: on [M]":"Quiet [M]",quiet);
-  uiActionButton(653,626,110,"Rest [B]");
-  uiActionButton(773,626,145,"Task details [T]",wood.taskPanel);
-  if(wood.taskPanel){
-   rounded(807,265,275,200,card);text(825,292,tasks[selected].title,accents[selected],GLUT_BITMAP_HELVETICA_12);
-   text(825,316,tasks[selected].later?"SET ASIDE":tasks[selected].done==3?"SETTLED":"YOUR NEXT SMALL STEP",gold,GLUT_BITMAP_HELVETICA_10);
-   wrapText(825,344,tasks[selected].done==3?"You can stop here or choose another tab.":tasks[selected].steps[tasks[selected].done],32,cream);
-   wrapText(825,387,activityVerb(selected),33,gold);
-   uiActionButton(831,425,244,"Close task details [T]");
-  }
-  if(wood.help){
-   rounded(280,170,540,230,card);text(308,205,"A LITTLE GUIDE",gold);
-   text(308,242,"Click the ground to walk. Click a scroll to visit its space.",cream,GLUT_BITMAP_HELVETICA_12);
-   text(308,270,"WASD walk | Right-drag orbit | Wheel zoom | J journal",cream,GLUT_BITMAP_HELVETICA_12);
-   text(308,298,"Deliver pages, repair the bridge, plant seeds, or prepare tea.",cream,GLUT_BITMAP_HELVETICA_12);
-   text(308,326,"A step, a boundary, quiet, or rest are all valid choices.",cream,GLUT_BITMAP_HELVETICA_12);
-   text(308,363,"C character / season | K next season | H close help",muted,GLUT_BITMAP_HELVETICA_12);
-  }
-  if(wood.wardrobe)wardrobePanel();
-  text(24,698,wood.lights>=3?"The path is lit. Click the sanctuary arch to head home.":nearbyPrompt(),gold,GLUT_BITMAP_HELVETICA_12);
- }
-
-}
+#include "storybook_ui.hpp"
 void displayGame(){
  static int lastTheme=-1;
  if(lastTheme!=int(wood.day)){glutSetWindowTitle(wood.day?"Too Many Tabs Open | The Daydream Grove - 3D":"Too Many Tabs Open | The Lanternwood - 3D");lastTheme=int(wood.day);}

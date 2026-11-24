@@ -16,10 +16,10 @@ void drawAlternateKeeper(){
 void fairy(){if(wood.character==0)drawPetalFairy();else drawAlternateKeeper();}
 void wardrobePanel(){
  Color card{.10f,.12f,.19f},gold{1,.82f,.52f};rounded(778,85,305,485,card);
- text(800,117,"YOUR STORYBOOK",gold);
- text(800,147,"Choose a season",ink,GLUT_BITMAP_HELVETICA_12);
+ uiText(800,117,"YOUR STORYBOOK",gold,18);
+ uiText(800,147,"Choose a season",ink,13);
  for(int n=0;n<3;++n)uiActionButton(795+n*92,160,86,n==0?"Summer":n==1?"Autumn":"Snow",wood.season==n);
- text(800,229,"Choose your keeper",ink,GLUT_BITMAP_HELVETICA_12);
+ uiText(800,229,"Choose your keeper",ink,13);
  for(int n=0;n<3;++n)uiActionButton(800,250+n*58,260,characterName(n),wood.character==n);
  wrapText(800,454,"Different appearances, the same abilities. Your progress stays when you change a character or season.",36,muted);
  uiActionButton(800,520,260,"Close storybook [C]");

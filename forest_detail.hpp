@@ -57,7 +57,7 @@ void forestDetails(){
   // Moonflowers open around the pond while the deer rests.
   for(int i=0;i<7;++i){float a=i*TAU/7;ball(-7+1.1f*std::cos(a),.15f,.2f+1.3f*std::sin(a),.12f,.05f,.12f,{.73f,.77f,1},.22f);}
  }
- label3(-8,1.1f,.2f,"QUIET GLADE - click to rest",{.95f,.87f,.64f});
+
  if(wood.day&&wood.season==0)for(int i=0;i<8;++i){float a=wood.time*.4f+i*1.7f;float x=5*std::sin(a),z=3*std::cos(a*.7f),y=1.7f+.5f*std::sin(a*2);
   float wing=.10f+.12f*std::fabs(std::sin(wood.time*8+i));
   ball(x-wing,y,z,wing,.07f,.11f,{.91f,.59f,.22f});ball(x+wing,y,z,wing,.07f,.11f,{.91f,.59f,.22f});
