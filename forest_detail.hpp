@@ -45,10 +45,17 @@ void forestDetails(){
  for(int i=0;i<12;++i){float a=i*TAU/12;ball(-7+1.4f*std::cos(a),.10f,.2f+1.65f*std::sin(a),.22f,.12f,.19f,{.43f,.45f,.34f});}
  cube(-7,.48f,2.7f,1.7f,.13f,.60f,{.45f,.29f,.19f});cube(-7,.84f,2.98f,1.7f,.45f,.1f,{.45f,.29f,.19f});
  for(float x:{-7.6f,-6.4f})cube(x,.22f,2.7f,.1f,.5f,.43f,{.32f,.24f,.18f});
- forestDeer();
+ if(wood.day)forestDeer();
+ else{
+  ball(7,.32f,-.7f,.62f,.24f,.34f,{.64f,.39f,.22f});
+  ball(7.4f,.40f,-.6f,.25f,.19f,.18f,{.64f,.39f,.22f});
+  // Moonflowers open around the pond while the deer rests.
+  for(int i=0;i<7;++i){float a=i*TAU/7;ball(-7+1.1f*std::cos(a),.15f,.2f+1.3f*std::sin(a),.12f,.05f,.12f,{.73f,.77f,1},.22f);}
+ }
  label3(-8,1.1f,.2f,"QUIET GLADE - click to rest",{.95f,.87f,.64f});
- if(wood.day)for(int i=0;i<5;++i){float a=wood.time*.4f+i*1.7f;float x=5*std::sin(a),z=3*std::cos(a*.7f),y=1.7f+.5f*std::sin(a*2);
+ if(wood.day)for(int i=0;i<8;++i){float a=wood.time*.4f+i*1.7f;float x=5*std::sin(a),z=3*std::cos(a*.7f),y=1.7f+.5f*std::sin(a*2);
   float wing=.10f+.12f*std::fabs(std::sin(wood.time*8+i));
   ball(x-wing,y,z,wing,.07f,.11f,{.91f,.59f,.22f});ball(x+wing,y,z,wing,.07f,.11f,{.91f,.59f,.22f});
  }
+ if(wood.day)for(int i=0;i<18;++i){float t=wood.time*.15f+i*.7f;float y=4.f-std::fmod(t,3.6f);ball(8*std::sin(i*2.4f)+.3f*std::sin(t),y,6*std::cos(i*1.7f),.045f,.016f,.075f,{.92f,.68f,.76f});}
 }

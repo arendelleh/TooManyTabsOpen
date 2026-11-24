@@ -7,8 +7,8 @@ A full 3D fairytale reflection game about academic overwhelm and making room for
 
 ## Two moods, one story
 
-- **The Daydream Grove:** pastel skies, blossom-colored trees, a pond, flowers, butterflies, and a woodland companion.
-- **The Lanternwood:** moonlight, hanging lantern cages, fairy-light strings, glowing halos, fireflies, and shimmering glints.
+- **The Daydream Grove:** pastel skies, blossom-colored trees, butterflies, drifting petals, an awake woodland companion, and decorative lanterns switched off.
+- **The Lanternwood:** moonlight, illuminated lantern cages, fairy-light strings, fireflies, moonflowers, and a resting deer.
 
 Four floating task scrolls preserve the original college-desktop concept. Guide the fairy, choose a task step, set a concern aside, quiet the message moth, or rest. Light three story lanterns and return to the sanctuary. There is no countdown or failure penalty. The original desktop remains available as a task journal.
 
@@ -39,7 +39,7 @@ The build script prefers **C:\msys64\ucrt64\bin**, then checks the original ming
 | Right-drag / wheel | Orbit / zoom the 3D camera |
 | H / F11 / R / Esc | Help / full-screen / restart / exit |
 
-All game text is English. Sound starts off. The original 24-second chime-and-pad loop is synthesized by tools/generate_ambience.py; it uses no downloaded recordings. Sound playback is currently implemented for Windows. Other platforms retain the visuals and gameplay.
+All game text is English. The game starts full-screen and fills the display without fixed-aspect side bars; F11 switches to a resizable window. Sound starts off. The original 24-second soft major-key harp loop is synthesized by tools/generate_ambience.py; it uses no downloaded recordings. Sound playback is currently implemented for Windows. Other platforms retain the visuals and gameplay.
 
 ## What each language does
 
@@ -63,5 +63,6 @@ See [the source guide](docs/Code%20Guide.md) for a file-by-file explanation.
 ## Development history
 
 The original 2D desktop is preserved in baseline commit **8022581**. The 3D adaptation is developed on **codex/lanternwood-3d**, with working updates committed separately. No license has been added; upstream library licenses still apply.
+
 
 

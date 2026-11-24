@@ -14,7 +14,7 @@ All listed files implement real project features. The new source is on the `code
 | ambience.hpp | Optional Windows background sound, on/off state, and clean stop | toggle and stop |
 | tools/generate_tasks.py | Validates editable task data and generates task_data.hpp | validate and generate |
 | assets/tasks.json | Four English task tabs and their example steps | titles and steps |
-| tools/generate_ambience.py | Synthesizes the original 24-second chime/pad loop and verifies its WAV format | generate and verify |
+| tools/generate_ambience.py | Synthesizes the original 24-second major-key harp loop and verifies its WAV format | generate and verify |
 | tests/test_content.py | Checks valid data, missing steps, duplicate IDs, unsupported text, and quote escaping | ContentTests |
 | build.ps1 / run.ps1 | Windows compilation, tests, runtime DLL path, and launching | compiler arguments and commands |
 | .github/workflows/build.yml | GitHub Actions Linux build and automated checks | job steps |
@@ -30,3 +30,4 @@ All listed files implement real project features. The new source is on the `code
 ## Verification
 
 Run `./build.ps1 -Test` on the configured Windows PC. It checks task data, the audio file, five Python content cases, and C++ gameplay assertions. These checks do not prove how the game looks or sounds on every device. Record actual visual and audio checks separately.
+

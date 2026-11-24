@@ -52,7 +52,7 @@ void cone(float x,float y,float z,float radius,float height,Color c){
  glPushMatrix();glTranslatef(x,y,z);glRotatef(-90,1,0,0);material(c);glutSolidCone(radius,height,20,4);glPopMatrix();
 }
 void ring3(float x,float y,float z,float radius,Color c){
- glPushMatrix();glTranslatef(x,y,z);glRotatef(90,1,0,0);material(c,.15f);glutSolidTorus(.035,radius,8,48);glPopMatrix();
+ glPushMatrix();glTranslatef(x,y,z);glRotatef(90,1,0,0);material(c,wood.day?0.f:.15f);glutSolidTorus(.035,radius,8,48);glPopMatrix();
 }
 void label3(float x,float y,float z,const string&s,Color c){
  forestShader.stop();glDisable(GL_LIGHTING);color(c);glRasterPos3f(x,y,z);for(unsigned char ch:s)glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,ch);glEnable(GL_LIGHTING);forestShader.begin(wood.day?1.f:0.f);
@@ -128,10 +128,10 @@ void scrollModel(int i){
  }
 }
 void sanctuary(){
- for(float side:{-1.f,1.f}){cube(side*1.1f,1.25f,6,.18f,2.6f,.24f,{.52f,.4f,.41f});ball(side*1.1f,2.65f,6,.22f,.25f,.22f,{1,.8f,.35f},.4f);}
+ for(float side:{-1.f,1.f}){cube(side*1.1f,1.25f,6,.18f,2.6f,.24f,{.52f,.4f,.41f});ball(side*1.1f,2.65f,6,.22f,.25f,.22f,{1,.8f,.35f},decorativeEmission(.4f));}
  cube(0,2.6f,6,2.4f,.15f,.24f,{.69f,.52f,.43f});
  ring3(0,.18f,6,1.7f,wood.lights>=3?Color{1,.8f,.37f}:Color{.42f,.47f,.5f});
- for(int i=0;i<3;++i){float x=(i-1)*.63f;cube(x,1.5f,6,.025f,1.8f,.025f,{.52f,.4f,.4f});ball(x,.7f+.07f*std::sin(wood.time+i),6,.18f,.26f,.18f,i<wood.lights?Color{1,.76f,.32f}:Color{.23f,.28f,.36f},i<wood.lights?.8f:0);}
+ for(int i=0;i<3;++i){float x=(i-1)*.63f;cube(x,1.5f,6,.025f,1.8f,.025f,{.52f,.4f,.4f});ball(x,.7f+.07f*std::sin(wood.time+i),6,.18f,.26f,.18f,i<wood.lights?Color{1,.76f,.32f}:Color{.23f,.28f,.36f},i<wood.lights?decorativeEmission(.8f):0);}
  label3(-1.05f,3.25f,6,wood.lights>=3?"SANCTUARY - E to rest":"THE PATH HOME",{1,.87f,.6f});
 }
 void scene3D(){
@@ -158,7 +158,7 @@ void scene3D(){
  sanctuary();
  // Fireflies are time-driven 3D points. Focus quiets the visual motion.
  forestShader.stop();glDisable(GL_LIGHTING);glPointSize(3);glBegin(GL_POINTS);
- for(int i=0;i<90;++i){float t=wood.time*(focus?.12f:.30f),aa=i*2.399f+t;float r=2+float(i%11)*.72f;color({.85f,.79f,.45f});glVertex3f(r*std::cos(aa),.7f+float(i%9)*.35f+.2f*std::sin(t+i),r*.8f*std::sin(aa));}glEnd();glEnable(GL_LIGHTING);forestShader.begin(wood.day?1.f:0.f);
+ for(int i=0;i<(wood.day?0:90);++i){float t=wood.time*(focus?.12f:.30f),aa=i*2.399f+t;float r=2+float(i%11)*.72f;color({.85f,.79f,.45f});glVertex3f(r*std::cos(aa),.7f+float(i%9)*.35f+.2f*std::sin(t+i),r*.8f*std::sin(aa));}glEnd();glEnable(GL_LIGHTING);forestShader.begin(wood.day?1.f:0.f);
  // The notification is a drifting message moth, quieted by the original M action.
  if(!quiet){float mx=3.2f*std::sin(wood.time*.4f);ball(mx,4.6f,1,.2f,.10f,.10f,{.87f,.63f,.7f});label3(mx-.8f,4.95f,1,"Any updates?  [M] quiet",{.95f,.72f,.79f});}
  fairy();
@@ -278,6 +278,7 @@ void worldTick(float dt){
  if(len>0){dx/=len;dz/=len;float a=wood.cameraYaw;float wx=dx*std::cos(a)+dz*std::sin(a),wz=-dx*std::sin(a)+dz*std::cos(a);wood.x+=wx*dt*3.5f;wood.z+=wz*dt*3.5f;wood.heading=std::atan2(wx,wz);float r=std::hypot(wood.x,wood.z);if(r>9.2f){wood.x*=9.2f/r;wood.z*=9.2f/r;}}
 }
 void keyUp(unsigned char key,int,int){wood.keys[key]=false;}
-void toggleFull(){static bool full=false;full=!full;if(full)glutFullScreen();else{glutReshapeWindow(W,H);glutPositionWindow(80,60);}}
+void toggleFull(){static bool full=true;full=!full;if(full)glutFullScreen();else{glutReshapeWindow(W,H);glutPositionWindow(80,60);}}
 void specialKey(int key,int,int){if(key==GLUT_KEY_F11)toggleFull();}
 void worldMotion(int x,int){if(wood.dragging){wood.cameraYaw+=(x-wood.mouseX)*.008f;wood.mouseX=x;}}
+

@@ -1,4 +1,4 @@
-"""Create an original, quiet, looping fairytale ambience with no downloaded music."""
+"""Create an original soft major-key harp melody, without drones or beating tones."""
 import argparse
 import math
 import struct
@@ -11,24 +11,37 @@ RATE, DURATION = 22050, 24
 
 def generate(path=OUTPUT):
     path.parent.mkdir(parents=True, exist_ok=True)
-    notes = (523.25, 659.25, 783.99, 987.77, 880.0, 783.99, 659.25, 587.33,
-             523.25, 783.99, 659.25, 880.0, 783.99, 659.25, 587.33, 523.25)
+    # Eight short bars, with a gentle C-F-C-G / C-F-G-C cadence.
+    melody = (523.25,659.25,783.99,659.25, 698.46,880.0,783.99,698.46,
+              659.25,783.99,659.25,523.25, 587.33,783.99,587.33,493.88,
+              523.25,659.25,783.99,1046.50, 880.0,783.99,698.46,880.0,
+              783.99,587.33,493.88,587.33, 659.25,587.33,523.25,523.25)
+    chords = ((261.63,329.63,392.0), (349.23,440.0,523.25),
+              (261.63,329.63,392.0), (196.0,246.94,293.66),
+              (261.63,329.63,392.0), (349.23,440.0,523.25),
+              (196.0,246.94,293.66), (261.63,329.63,392.0))
+    pattern = (0,1,2,1,0,1,2,1)
+
+    def harp(frequency, age):
+        attack = min(1.0, age / .012)
+        phase = math.tau * frequency * age
+        return attack * (math.sin(phase) * math.exp(-age * 3.2)
+                         + .22 * math.sin(phase * 2) * math.exp(-age * 5.5)
+                         + .06 * math.sin(phase * 3) * math.exp(-age * 8))
+
     samples = bytearray()
     for i in range(RATE * DURATION):
         t = i / RATE
-        fade = min(1.0, t / .65, (DURATION - t) / .65)
-        pad = .027 * (math.sin(math.tau * 130.8128 * t)
-                      + .65 * math.sin(math.tau * 196.0 * t)
-                      + .40 * math.sin(math.tau * 261.6256 * t))
-        chime = 0.0
-        event = int(t / 1.5)
+        fade = min(1.0, t / .1, (DURATION - t) / .4)
+        music = 0.0
+        event = int(t / .75)
         for index in range(max(0, event - 2), event + 1):
-            age = t - index * 1.5
-            envelope = min(1.0, age / .025) * math.exp(-age * 1.7)
-            frequency = notes[index % len(notes)]
-            chime += .075 * envelope * (math.sin(math.tau * frequency * age)
-                                        + .17 * math.sin(math.tau * frequency * 2.001 * age))
-        value = max(-.28, min(.28, fade * (pad + chime)))
+            music += .075 * harp(melody[index % len(melody)], t - index * .75)
+        arp = int(t / .375)
+        for index in range(max(0, arp - 2), arp + 1):
+            chord = chords[(index // 8) % 8]
+            music += .025 * harp(chord[pattern[index % 8]], t - index * .375)
+        value = max(-.25, min(.25, fade * music))
         samples.extend(struct.pack("<h", int(value * 32767)))
     with wave.open(str(path), "wb") as sound:
         sound.setnchannels(1)
@@ -43,7 +56,10 @@ def verify(path=OUTPUT):
         assert sound.getsampwidth() == 2
         assert sound.getframerate() == RATE
         assert sound.getnframes() == RATE * DURATION
-    print("PASS: original 24-second PCM ambience, 22050 Hz mono")
+        frames = sound.readframes(sound.getnframes())
+        peak = max(abs(value[0]) for value in struct.iter_unpack("<h", frames))
+        assert 0 < peak < 32767 * .26, "Sound should remain quiet and unclipped."
+    print("PASS: original 24-second harp melody, 22050 Hz mono, quiet and unclipped")
 
 
 if __name__ == "__main__":

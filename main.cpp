@@ -188,8 +188,8 @@ void mouse(int buttonId,int state,int px,int py){
 }
 
 void reshape(int w,int h){
- winW=std::max(1,w);winH=std::max(1,h);float scale=std::min(winW/float(W),winH/float(H));
- vw=std::max(1,int(W*scale));vh=std::max(1,int(H*scale));vx=(winW-vw)/2;vy=(winH-vh)/2;
+ winW=std::max(1,w);winH=std::max(1,h);
+ vw=winW;vh=winH;vx=0;vy=0;
  glViewport(vx,vy,vw,vh);glMatrixMode(GL_PROJECTION);glLoadIdentity();glOrtho(0,W,H,0,-1,1);glMatrixMode(GL_MODELVIEW);
 }
 
@@ -215,8 +215,8 @@ int main(int argc,char**argv){
   reset();leaveRest();assert(wood.lights==1);leaveRest();assert(wood.lights==1);
   reset();screen=Screen::World;wood.keys['w']=true;worldTick(100);assert(std::hypot(wood.x,wood.z)<9.201f);
   reset();assert(wood.lights==0&&!wood.rest&&!wood.boundary&&!wood.silence);
-  screen=Screen::World;assert(wood.day);
-  handleWorldClick(850,30);assert(!wood.day&&wood.lights==0);
+  screen=Screen::World;assert(wood.day);assert(decorativeEmission(2.f)==0.f);
+  handleWorldClick(850,30);assert(!wood.day&&wood.lights==0);assert(decorativeEmission(2.f)==2.f);
   handleWorldClick(850,30);assert(wood.day&&wood.lights==0);
   handleWorldClick(980,30);assert(wood.help);
   handleWorldClick(800,640);assert(wood.taskPanel);
@@ -232,6 +232,7 @@ int main(int argc,char**argv){
  glutCloseFunc([](){ambience.stop();});
  glutIgnoreKeyRepeat(1);glutKeyboardUpFunc(keyUp);glutSpecialFunc(specialKey);glutMotionFunc(worldMotion);
  glutDisplayFunc(display);glutReshapeFunc(reshape);glutKeyboardFunc(keyboard);glutMouseFunc(mouse);
+ glutFullScreen();
  lastTick=glutGet(GLUT_ELAPSED_TIME);glutTimerFunc(16,timer,0);glutMainLoop();return 0;
 }
 
