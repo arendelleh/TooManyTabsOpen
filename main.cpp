@@ -77,64 +77,9 @@ void header(){
 
 #include "lanternwood.hpp"
 
-void displayLegacy(){
- orthoUI();
- glClearColor(bg.r,bg.g,bg.b,1);glClear(GL_COLOR_BUFFER_BIT);glMatrixMode(GL_MODELVIEW);glLoadIdentity();header();
- if(screen==Screen::Welcome){
-  rect(120,145,860,475,panel);text(175,208,"College can feel like too many tabs open.",ink,GLUT_BITMAP_HELVETICA_18);
-  text(175,254,"Assignments. Group chats. Deadlines. Making time for yourself.",muted);
-  text(175,303,"Explore a fictional student desktop at your own pace.");
-  text(175,339,"Choose one task, set another aside, or take a quiet break.");
-  text(175,392,"There is no countdown and no perfect score.",mint);
-  button(175,431,250,"Open my desktop [Enter]",true);
-  text(175,515,"An educational reflection activity, not a mental-health assessment.",muted,GLUT_BITMAP_HELVETICA_12);
-  text(175,540,"If you need support, consider a trusted person or your campus counselor.",muted,GLUT_BITMAP_HELVETICA_12);
- }else if(screen==Screen::Break){
-  text(360,142,"A moment away from the tabs",mint);
-  float phase=std::fmod(breathTime,8.f);float amount=(1-std::cos(phase*6.2831853f/8))/2;
-  circle(550,340,135,Color{.10f,.22f,.28f});circle(550,340,65+55*amount,Color{.28f,.65f,.59f});
-  text(515,346,paused?"Paused":phase<4?"Breathe in":"Breathe out",bg);
-  text(317,510,"Follow gently if comfortable, or simply rest here.",muted);
-  button(330,550,205,paused?"Resume [Space]":"Pause [Space]");button(555,550,215,"Back to desktop [B]");
- }
- 
- else{
-  for(int i=0;i<4;++i){
-   if(focus&&i!=selected)continue;
-   int x=30+i*265;rect(x,115,250,65,i==selected?Color{.20f,.32f,.39f}:panel);
-   diamond(x+22,140,i==selected?mint:muted);text(x+44,145,tasks[i].title);
-   text(x+44,165,tasks[i].later?"LATER":tasks[i].done==3?"COMPLETE":"READY FOR A SMALL STEP",muted,GLUT_BITMAP_HELVETICA_10);
-  }
+#include "journal_ui.hpp"
 
-
-  const Task&t=tasks[selected];rect(30,202,695,367,panel);
-  text(55,244,t.title,ink,GLUT_BITMAP_HELVETICA_18);text(55,273,t.subtitle,muted);
-  for(int i=0;i<3;++i){
-   int y=300+i*57;rect(55,y,28,28,i<t.done?mint:Color{.20f,.26f,.36f});
-   if(i<t.done){line(62,y+14,68,y+21,bg);line(68,y+21,78,y+7,bg);}
-   text(100,y+21,t.steps[i],i<t.done?mint:ink);
-  }
-
-  button(55,495,245,t.done==3?"Steps complete":"Complete next step [C]",t.done<3&&!t.later);
-  button(315,495,245,t.later?"Bring back [L]":"Set aside for later [L]");
-  rect(745,202,325,367,panel);text(767,240,"MAKE SOME SPACE",mint);
-  button(767,263,280,focus?"Focus mode: ON [F]":"Focus mode: OFF [F]",focus);
-  button(767,318,280,quiet?"Notifications: muted [M]":"Mute notifications [M]",quiet);
-  button(767,373,280,"Take a breathing break [B]");
-  rect(767,439,280,105,Color{.28f,.28f,.24f});
-  color(Color{.46f,.44f,.32f});glBegin(GL_TRIANGLES);glVertex2f(1027,439);glVertex2f(1047,459);glVertex2f(1027,459);glEnd();
-  text(783,466,quiet?"Quiet space enabled":"A fictional group chat says:",muted,GLUT_BITMAP_HELVETICA_12);
-  text(783,493,quiet?"You choose when to check in.":"Any updates on our project?",ink,GLUT_BITMAP_HELVETICA_12);
-  text(783,520,"You can ask someone for support.",mint,GLUT_BITMAP_HELVETICA_12);
-  rect(30,589,1040,49,Color{.10f,.22f,.24f});text(48,620,feedback,mint);
- }
-
- text(30,675,"1-4 Select tab | C Step | L Later | F Focus | M Mute | B Break | R Reset | Esc Exit",muted,GLUT_BITMAP_HELVETICA_12);
- text(30,697,"Fictional tasks. Completing a step acknowledges an action; it does not measure your well-being.",muted,GLUT_BITMAP_HELVETICA_10);
- glutSwapBuffers();
-}
-
-void display(){if(screen==Screen::Desktop)displayLegacy();else displayGame();}
+void display(){if(screen==Screen::Desktop)displayJournal();else displayGame();}
 
 void keyboard(unsigned char key,int,int){
  wood.keys[key]=true;
@@ -164,7 +109,7 @@ void keyboard(unsigned char key,int,int){
  else if(screen==Screen::Break){if(key=='b'||key=='B'||key=='e'||key=='E')leaveRest();else if(key==' ')paused=!paused;}
  else{
   if(key>='1'&&key<='4'){selected=key-'1';feedback="Choose a small step, or leave this task for later.";}
-  switch(key){case 'c':case 'C':completeStep();break;case 'l':case 'L':toggleLater();break;
+  switch(key){case 'c':case 'C':visitJournalActivity();break;case 'l':case 'L':toggleLater();break;
    case 'f':case 'F':focus=!focus;break;case 'm':case 'M':toggleQuiet();break;
    case 'b':case 'B':enterRest();break;default:break;}
  }
@@ -179,6 +124,7 @@ void mouse(int buttonId,int state,int px,int py){
  int top=winH-vy-vh;if(px<vx||px>=vx+vw||py<top||py>=top+vh)return;
  int x=(px-vx)*W/vw,y=(py-top)*H/vh;
  if(screen==Screen::Welcome||screen==Screen::Ending){if(hit(x,y,328,458,444,34))keyboard(13,0,0);return;}
+ if(screen==Screen::Desktop){journalClick(x,y);glutPostRedisplay();return;}
  if(screen==Screen::World){handleWorldClick(x,y);glutPostRedisplay();return;}
  if(screen==Screen::Break){if(hit(x,y,525,635,255,34))keyboard('b',0,0);else if(hit(x,y,320,635,190,34))keyboard(' ',0,0);return;}
  for(int i=0;i<4;++i)if((!focus||i==selected)&&hit(x,y,30+i*265,115,250,65))keyboard('1'+i,0,0);
@@ -243,6 +189,11 @@ int main(int argc,char**argv){
   reset();screen=Screen::World;wood.wardrobe=true;wardrobeClick(820,325);assert(wood.character==1);
   wardrobeClick(900,175);assert(wood.season==1&&wood.lights==0);
   wood.x=2;wood.z=3;enterRest();assert(screen==Screen::Break);leaveRest();assert(wood.x==2&&wood.z==3);
+  reset();screen=Screen::Desktop;
+  journalClick(150,370);assert(selected==2&&screen==Screen::Desktop);
+  journalClick(450,510);assert(screen==Screen::World&&wood.navigating&&tasks[2].done==0);
+  screen=Screen::Desktop;journalClick(730,510);assert(tasks[2].later);
+  journalClick(730,510);assert(!tasks[2].later&&tasks[2].done==0);
   reset();
   std::cout<<"PASS: 3D proximity, story lanterns, boundary and quiet limits, sanctuary, rest, movement, and reset;  step limits, Later guard, restore, reset, hit boundaries\n";return 0;
  }
