@@ -142,16 +142,18 @@ void keyboard(unsigned char key,int,int){
  if(key=='t'||key=='T'){wood.taskPanel=!wood.taskPanel;glutPostRedisplay();return;}
  if(key==27){glutLeaveMainLoop();return;}
  if(key=='r'||key=='R'){reset();glutPostRedisplay();return;}
+ if((key=='c'||key=='C')&&screen==Screen::World){wood.wardrobe=!wood.wardrobe;wood.taskPanel=false;glutPostRedisplay();return;}
+ if(key=='k'||key=='K'){wood.season=(wood.season+1)%3;glutPostRedisplay();return;}
  if(key=='j'||key=='J'){if(screen==Screen::World)screen=Screen::Desktop;else if(screen==Screen::Desktop)screen=Screen::World;glutPostRedisplay();return;}
  if(screen==Screen::Ending){if(key==13)screen=Screen::World;glutPostRedisplay();return;}
  if(screen==Screen::World){
   if(key>='1'&&key<='4'){selected=key-'1';wood.taskPanel=true;feedback="Follow the gold spark to acknowledge one small step.";}
   switch(key){
-   case 'e':case 'E':case 'c':case 'C':interactWood();break;
+   case 'e':case 'E':interactWood();break;
    case 'l':case 'L':toggleLater();break;
    case 'f':case 'F':focus=!focus;break;
    case 'm':case 'M':toggleQuiet();break;
-   case 'b':case 'B':screen=Screen::Break;breathTime=0;paused=false;break;
+   case 'b':case 'B':enterRest();break;
    default:break;
   }
   glutPostRedisplay();return;
@@ -162,7 +164,7 @@ void keyboard(unsigned char key,int,int){
   if(key>='1'&&key<='4'){selected=key-'1';feedback="Choose a small step, or leave this task for later.";}
   switch(key){case 'c':case 'C':completeStep();break;case 'l':case 'L':toggleLater();break;
    case 'f':case 'F':focus=!focus;break;case 'm':case 'M':toggleQuiet();break;
-   case 'b':case 'B':screen=Screen::Break;breathTime=0;paused=false;break;default:break;}
+   case 'b':case 'B':enterRest();break;default:break;}
  }
 
  glutPostRedisplay();
@@ -178,7 +180,7 @@ void mouse(int buttonId,int state,int px,int py){
  if(hit(x,y,820,20,133,33)){toggleDay();glutPostRedisplay();return;}
  if(screen==Screen::Welcome||screen==Screen::Ending){if(hit(x,y,95,390,315,42))keyboard(13,0,0);return;}
  if(screen==Screen::World){handleWorldClick(x,y);glutPostRedisplay();return;}
- if(screen==Screen::Break){if(hit(x,y,300,480,500,80))keyboard('b',0,0);else if(hit(x,y,440,230,220,220))keyboard(' ',0,0);return;}
+ if(screen==Screen::Break){if(hit(x,y,507,618,295,33))keyboard('b',0,0);else if(hit(x,y,294,618,195,33))keyboard(' ',0,0);return;}
  for(int i=0;i<4;++i)if((!focus||i==selected)&&hit(x,y,30+i*265,115,250,65))keyboard('1'+i,0,0);
  if(hit(x,y,55,495,245,42))keyboard('c',0,0);
  else if(hit(x,y,315,495,245,42))keyboard('l',0,0);
@@ -207,7 +209,8 @@ int main(int argc,char**argv){
   assert(hit(0,0,0,0,10,10)&&!hit(10,10,0,0,10,10));
   logicTest=false;screen=Screen::World;
   Vec3 spark=nextSpark(0);wood.x=0;wood.z=0;completeStep();assert(tasks[0].done==0);
-  wood.x=spark.x;wood.z=spark.z;completeStep();assert(tasks[0].done==1&&wood.lights==1);
+  wood.x=spark.x;wood.z=spark.z;interactWood();assert(tasks[0].done==0&&wood.carrying[0]);
+  spark=activityTarget(0);wood.x=spark.x;wood.z=spark.z;interactWood();assert(tasks[0].done==1&&wood.lights==1&&!wood.carrying[0]);
   toggleLater();assert(wood.lights==2);toggleLater();toggleLater();assert(wood.lights==2);
   toggleQuiet();assert(wood.lights==3);toggleQuiet();toggleQuiet();assert(wood.lights==3);
   wood.x=0;wood.z=0;interactWood();assert(screen==Screen::World);
@@ -222,6 +225,17 @@ int main(int argc,char**argv){
   handleWorldClick(800,640);assert(wood.taskPanel);
   handleWorldClick(50,100);assert(selected==0&&wood.navigating);
   wood.x=0;wood.z=0;walkToward(1,1);worldTick(.1f);assert(wood.x>0&&wood.z>0);
+  for(int task=0;task<4;++task){
+   reset();screen=Screen::World;selected=task;
+   for(int stage=0;stage<3;++stage){
+    Vec3 target=activityTarget(task);wood.x=target.x;wood.z=target.z;interactWood();
+    if(task<3){assert(tasks[task].done==stage&&wood.carrying[task]);target=activityTarget(task);wood.x=target.x;wood.z=target.z;interactWood();}
+    assert(tasks[task].done==stage+1);
+   }
+  }
+  reset();screen=Screen::World;wood.wardrobe=true;wardrobeClick(820,325);assert(wood.character==1);
+  wardrobeClick(900,175);assert(wood.season==1&&wood.lights==0);
+  wood.x=2;wood.z=3;enterRest();assert(screen==Screen::Break);leaveRest();assert(wood.x==2&&wood.z==3);
   reset();
   std::cout<<"PASS: 3D proximity, story lanterns, boundary and quiet limits, sanctuary, rest, movement, and reset;  step limits, Later guard, restore, reset, hit boundaries\n";return 0;
  }

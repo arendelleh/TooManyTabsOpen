@@ -10,7 +10,9 @@ A full 3D fairytale reflection game about academic overwhelm and making room for
 - **The Daydream Grove:** pastel skies, blossom-colored trees, butterflies, drifting petals, an awake woodland companion, and decorative lanterns switched off.
 - **The Lanternwood:** moonlight, illuminated lantern cages, fairy-light strings, fireflies, moonflowers, and a resting deer.
 
-Four floating task scrolls preserve the original college-desktop concept. Guide the fairy, choose a task step, set a concern aside, quiet the message moth, or rest. Light three story lanterns and return to the sanctuary. There is no countdown or failure penalty. The original desktop remains available as a task journal.
+Choose Summer, Autumn, or Snowfall independently of day and night. Summer has blossoms and butterflies; Autumn changes the canopy and drifting leaves; Snowfall covers the ground and crowns with snow. Choose a Petal Fairy, Woodland Elf, or Moon Mage in the storybook side panel.
+
+Four task scrolls preserve the original college-desktop concept. Restore lost pages to a study book, carry planks to repair a bridge, plant seeds that grow into flowers, or prepare tea beside the pond. Each activity changes an object in the world. You can also set a concern aside, quiet the message moth, or rest. Light three story lanterns and return to the sanctuary. There is no countdown or failure penalty. The original desktop remains available as a task journal.
 
 The lantern count is fictional story progression, not a mental-health score. The game does not diagnose conditions or measure well-being. Progress lasts for the current session.
 
@@ -30,10 +32,11 @@ The build script prefers **C:\msys64\ucrt64\bin**, then checks the original ming
 | Enter | Start or continue exploring |
 | Click ground / WASD | Walk to a point / walk manually |
 | Click scroll or left-hand task button | Select its task and walk toward the next spark |
-| E or Small step button | Acknowledge the example step when near its spark |
+| E or Interact button | Perform the displayed action near the marked object: collect, carry, place, plant, or prepare tea |
 | L / F / M | Set aside or restore a tab / Focus / quiet the message moth |
 | B or pond | Visit the quiet glade |
 | T / J | Toggle compact task details / original desktop journal |
+| C / K | Open the character and season panel / cycle seasons |
 | N or Day/Night button | Switch themes without losing progress |
 | V or Sound button | Toggle the original background ambience |
 | Right-drag / wheel | Orbit / zoom the 3D camera |
@@ -50,19 +53,18 @@ All game text is English. The game starts full-screen and fills the display with
 | Python | Task-content validation, generated C++ data, original audio synthesis, and content tests |
 | PowerShell | Windows build, test, and launch scripts |
 
+GitHub shows the dominant language on the repository list. The repository Languages section can show the other detected source languages; badges above describe their actual roles. Shader files are explicitly classified as GLSL in .gitattributes, and the generated task header is marked as generated.
+
 Editable task data is in assets/tasks.json. The generated task_data.hpp is checked in so the source stays understandable. Technology badges describe the implementation; they are not GitHub achievements.
 
 ## Verification and automation
 
 GitHub Actions installs Linux graphics development libraries, validates content, checks the audio format, compiles the game, and runs the C++ gameplay checks. The self-test runs without opening a window.
 
-Local checks cover task limits, Later behavior, proximity, lantern limits, rest, sanctuary completion, movement, reset, theme buttons, and task navigation. Five Python tests cover content validation. Device-specific visual and audio checks remain part of manual testing.
+Local checks cover pickup and delivery for all four activities, task limits, Later behavior, proximity, lantern limits, rest and position restoration, sanctuary completion, movement, reset, theme buttons, character and season selection, and task navigation. Five Python tests cover content validation. Device-specific visual and audio checks remain part of manual testing.
 
 See [the source guide](docs/Code%20Guide.md) for a file-by-file explanation.
 
 ## Development history
 
 The original 2D desktop is preserved in baseline commit **8022581**. The 3D adaptation is developed on **codex/lanternwood-3d**, with working updates committed separately. No license has been added; upstream library licenses still apply.
-
-
-

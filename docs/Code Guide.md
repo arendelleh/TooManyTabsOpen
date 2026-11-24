@@ -6,7 +6,10 @@ All listed files implement real project features. The new source is on the `code
 | --- | --- | --- |
 | main.cpp | Original task logic, journal, GLUT callbacks, input dispatch, resize handling, and gameplay self-tests | reset, completeStep, keyboard, mouse, timer, main |
 | lanternwood.hpp | 3D camera, fairy model, task scrolls, sanctuary, clickable UI, ray projection, and movement | scene3D, sceneClick, handleWorldClick, worldTick |
-| forest_detail.hpp | Procedural broadleaf trees, branching trunks, flowers, pond, bench, deer, and butterflies | broadleaf, flowerPatch, forestDetails |
+| activities.hpp | Contextual E actions, pickup/delivery targets, and in-world rest | activityTarget, performActivity, nearbyPrompt |
+| activity_models.hpp | Collectible pages, planks, seeds, growing flowers, and visible task progress | activityModels and carried objects |
+| characters.hpp | Three keeper models and the clickable character/season panel | fairy, wardrobePanel, wardrobeClick |
+| forest_detail.hpp | Seasonal broadleaf trees, branching trunks, flowers, pond, bench, deer, and butterflies | broadleaf, flowerPatch, forestDetails |
 | fairy_lights.hpp | Hanging lantern models, sagging light strings, generated glow texture, additive halos, and animated glints | lantern, fairyLightGeometry, fairyGlowPass |
 | forest_shader.hpp | GLSL compilation, linking, uniforms, and a fixed-pipeline fallback | init, stage, begin |
 | assets/shaders/forest.vert | Transforms vertices and passes surface attributes to the fragment shader | main |

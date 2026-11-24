@@ -1,0 +1,9 @@
+* text=auto
+*.cpp text eol=lf
+*.hpp text eol=lf
+*.py text eol=lf
+*.ps1 text eol=crlf
+assets/shaders/*.vert linguist-language=GLSL
+assets/shaders/*.frag linguist-language=GLSL
+task_data.hpp linguist-generated=true
+*.wav binary

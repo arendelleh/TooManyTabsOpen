@@ -2,27 +2,43 @@
   "tasks": [
     {
       "id": "coursework",
-      "title": "CS0045 Lab Exam",
+      "title": "Coursework Pages",
       "subtitle": "Start with one small piece of the exam.",
-      "steps": ["Read the lab exam instructions", "Choose three topics to review", "Start one small piece of code"]
+      "steps": [
+        "Return the first lost page to the book",
+        "Return the second lost page to the book",
+        "Return the final lost page to the book"
+      ]
     },
     {
       "id": "group_work",
-      "title": "Research Group",
+      "title": "Groupwork Bridge",
       "subtitle": "Make the next conversation easier.",
-      "steps": ["Check the completed assessments", "Summarize one important finding", "Plan one next step with the group"]
+      "steps": [
+        "Carry the first plank to the bridge",
+        "Carry the second plank to the bridge",
+        "Carry the final plank to the bridge"
+      ]
     },
     {
       "id": "study",
-      "title": "Study Habits",
+      "title": "Habit Garden",
       "subtitle": "Make room for a short review.",
-      "steps": ["Choose one course to review", "Read one section of your notes", "Write one practice question"]
+      "steps": [
+        "Take a seed and plant the first flower",
+        "Take a seed and plant the second flower",
+        "Take a seed and plant the final flower"
+      ]
     },
     {
       "id": "personal",
       "title": "Personal Time",
       "subtitle": "Your needs belong on the list too.",
-      "steps": ["Consider a water or meal break", "Make a little room for a hobby", "Plan a comfortable time to rest"]
+      "steps": [
+        "Gather tea leaves beside the garden",
+        "Fill your cup at the pond",
+        "Place your tea on the quiet bench"
+      ]
     }
   ]
 }

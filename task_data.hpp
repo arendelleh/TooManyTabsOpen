@@ -2,9 +2,9 @@
 #pragma once
 inline std::array<Task, 4> makeTasks() {
   return std::array<Task, 4>{{
-    Task{"CS0045 Lab Exam", "Start with one small piece of the exam.", {"Read the lab exam instructions", "Choose three topics to review", "Start one small piece of code"}, 0, false},
-    Task{"Research Group", "Make the next conversation easier.", {"Check the completed assessments", "Summarize one important finding", "Plan one next step with the group"}, 0, false},
-    Task{"Study Habits", "Make room for a short review.", {"Choose one course to review", "Read one section of your notes", "Write one practice question"}, 0, false},
-    Task{"Personal Time", "Your needs belong on the list too.", {"Consider a water or meal break", "Make a little room for a hobby", "Plan a comfortable time to rest"}, 0, false}
+    Task{"Coursework Pages", "Start with one small piece of the exam.", {"Return the first lost page to the book", "Return the second lost page to the book", "Return the final lost page to the book"}, 0, false},
+    Task{"Groupwork Bridge", "Make the next conversation easier.", {"Carry the first plank to the bridge", "Carry the second plank to the bridge", "Carry the final plank to the bridge"}, 0, false},
+    Task{"Habit Garden", "Make room for a short review.", {"Take a seed and plant the first flower", "Take a seed and plant the second flower", "Take a seed and plant the final flower"}, 0, false},
+    Task{"Personal Time", "Your needs belong on the list too.", {"Gather tea leaves beside the garden", "Fill your cup at the pond", "Place your tea on the quiet bench"}, 0, false}
   }};
 }
