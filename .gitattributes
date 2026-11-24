@@ -3,7 +3,10 @@
 *.hpp text eol=lf
 *.py text eol=lf
 *.ps1 text eol=crlf
-assets/shaders/*.vert linguist-language=GLSL
-assets/shaders/*.frag linguist-language=GLSL
+assets/shaders/*.vert linguist-language=GLSL linguist-detectable=true linguist-generated=false linguist-vendored=false
+assets/shaders/*.frag linguist-language=GLSL linguist-detectable=true linguist-generated=false linguist-vendored=false
+# These are project tools, not generated output or vendored dependencies.
+tools/*.py linguist-language=Python linguist-detectable=true linguist-generated=false linguist-vendored=false
+tests/*.py linguist-language=Python linguist-detectable=true linguist-generated=false linguist-vendored=false
 task_data.hpp linguist-generated=true
 *.wav binary
