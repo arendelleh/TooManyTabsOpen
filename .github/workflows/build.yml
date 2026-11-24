@@ -17,6 +17,7 @@ jobs:
           python3 tools/generate_tasks.py
           git diff --exit-code -- task_data.hpp
           python3 -m unittest discover -s tests -p 'test_*.py'
+          python3 tools/generate_ambience.py --check
       - name: Compile the 3D game
         run: g++ -std=c++17 -O2 -Wall -Wextra -pedantic main.cpp -o TooManyTabsOpen -lglut -lGLU -lGL
       - name: Check gameplay without opening a window

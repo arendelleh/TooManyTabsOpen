@@ -10,3 +10,4 @@ TESTING.original.csv
 __pycache__/
 *.pyc
 artifacts/
+*.log

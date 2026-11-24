@@ -1,6 +1,7 @@
 
 #include <GL/freeglut.h>
 #include <array>
+#include "ambience.hpp"
 #include <algorithm>
 #include <cmath>
 #include <string>
@@ -135,12 +136,16 @@ void display(){if(screen==Screen::Desktop)displayLegacy();else displayGame();}
 
 void keyboard(unsigned char key,int,int){
  wood.keys[key]=true;
+ if(key=='v'||key=='V'){if(!ambience.toggle())feedback="Sound could not start. Check the audio asset and system audio device.";glutPostRedisplay();return;}
+ if(key=='n'||key=='N'){toggleDay();glutPostRedisplay();return;}
+ if(key=='h'||key=='H'){wood.help=!wood.help;glutPostRedisplay();return;}
+ if(key=='t'||key=='T'){wood.taskPanel=!wood.taskPanel;glutPostRedisplay();return;}
  if(key==27){glutLeaveMainLoop();return;}
  if(key=='r'||key=='R'){reset();glutPostRedisplay();return;}
  if(key=='j'||key=='J'){if(screen==Screen::World)screen=Screen::Desktop;else if(screen==Screen::Desktop)screen=Screen::World;glutPostRedisplay();return;}
  if(screen==Screen::Ending){if(key==13)screen=Screen::World;glutPostRedisplay();return;}
  if(screen==Screen::World){
-  if(key>='1'&&key<='4'){selected=key-'1';feedback="Follow the gold spark to acknowledge one small step.";}
+  if(key>='1'&&key<='4'){selected=key-'1';wood.taskPanel=true;feedback="Follow the gold spark to acknowledge one small step.";}
   switch(key){
    case 'e':case 'E':case 'c':case 'C':interactWood();break;
    case 'l':case 'L':toggleLater();break;
@@ -169,8 +174,10 @@ void mouse(int buttonId,int state,int px,int py){
  if(buttonId!=GLUT_LEFT_BUTTON||state!=GLUT_DOWN)return;
  int top=winH-vy-vh;if(px<vx||px>=vx+vw||py<top||py>=top+vh)return;
  int x=(px-vx)*W/vw,y=(py-top)*H/vh;
+ if(hit(x,y,680,20,125,33)){keyboard('v',0,0);return;}
+ if(hit(x,y,820,20,133,33)){toggleDay();glutPostRedisplay();return;}
  if(screen==Screen::Welcome||screen==Screen::Ending){if(hit(x,y,95,390,315,42))keyboard(13,0,0);return;}
- if(screen==Screen::World){for(int i=0;i<4;++i)if((!focus||i==selected)&&hit(x,y,27+i*268,93,252,48))keyboard('1'+i,0,0);return;}
+ if(screen==Screen::World){handleWorldClick(x,y);glutPostRedisplay();return;}
  if(screen==Screen::Break){if(hit(x,y,300,480,500,80))keyboard('b',0,0);else if(hit(x,y,440,230,220,220))keyboard(' ',0,0);return;}
  for(int i=0;i<4;++i)if((!focus||i==selected)&&hit(x,y,30+i*265,115,250,65))keyboard('1'+i,0,0);
  if(hit(x,y,55,495,245,42))keyboard('c',0,0);
@@ -208,11 +215,21 @@ int main(int argc,char**argv){
   reset();leaveRest();assert(wood.lights==1);leaveRest();assert(wood.lights==1);
   reset();screen=Screen::World;wood.keys['w']=true;worldTick(100);assert(std::hypot(wood.x,wood.z)<9.201f);
   reset();assert(wood.lights==0&&!wood.rest&&!wood.boundary&&!wood.silence);
+  screen=Screen::World;assert(wood.day);
+  handleWorldClick(850,30);assert(!wood.day&&wood.lights==0);
+  handleWorldClick(850,30);assert(wood.day&&wood.lights==0);
+  handleWorldClick(980,30);assert(wood.help);
+  handleWorldClick(800,640);assert(wood.taskPanel);
+  handleWorldClick(50,100);assert(selected==0&&wood.navigating);
+  wood.x=0;wood.z=0;walkToward(1,1);worldTick(.1f);assert(wood.x>0&&wood.z>0);
+  reset();
   std::cout<<"PASS: 3D proximity, story lanterns, boundary and quiet limits, sanctuary, rest, movement, and reset;  step limits, Later guard, restore, reset, hit boundaries\n";return 0;
  }
 
  glutInit(&argc,argv);glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB|GLUT_DEPTH|GLUT_MULTISAMPLE);glutInitWindowSize(W,H);
  glutCreateWindow("Too Many Tabs Open | The Lanternwood - 3D");glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+ forestShader.init();
+ glutCloseFunc([](){ambience.stop();});
  glutIgnoreKeyRepeat(1);glutKeyboardUpFunc(keyUp);glutSpecialFunc(specialKey);glutMotionFunc(worldMotion);
  glutDisplayFunc(display);glutReshapeFunc(reshape);glutKeyboardFunc(keyboard);glutMouseFunc(mouse);
  lastTick=glutGet(GLUT_ELAPSED_TIME);glutTimerFunc(16,timer,0);glutMainLoop();return 0;

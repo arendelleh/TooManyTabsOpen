@@ -1,34 +1,66 @@
 # Too Many Tabs Open
 
-A C++17 and OpenGL/freeglut project about academic overwhelm and making space for one small step.
+![C++17](assets/badges/cpp.svg) ![GLSL](assets/badges/glsl.svg) ![Python](assets/badges/python.svg) ![PowerShell](assets/badges/powershell.svg)
+[![Build and gameplay checks](https://github.com/arendelleh/Too-Many-Tabs-Open/actions/workflows/build.yml/badge.svg)](https://github.com/arendelleh/Too-Many-Tabs-Open/actions/workflows/build.yml)
 
-## Current version
+A full 3D fairytale reflection game about academic overwhelm and making room for one small choice.
 
-The current baseline is a 2D fictional student desktop with four task tabs, example action steps, a Later option, Focus mode, simulated notification muting, and an optional breathing-break screen. Tasks and progress last for the session.
+## Two moods, one story
 
-This is an educational reflection activity. It does not diagnose conditions or measure well-being.
+- **The Daydream Grove:** pastel skies, blossom-colored trees, a pond, flowers, butterflies, and a woodland companion.
+- **The Lanternwood:** moonlight, hanging lantern cages, fairy-light strings, glowing halos, fireflies, and shimmering glints.
 
-## Run
+Four floating task scrolls preserve the original college-desktop concept. Guide the fairy, choose a task step, set a concern aside, quiet the message moth, or rest. Light three story lanterns and return to the sanctuary. There is no countdown or failure penalty. The original desktop remains available as a task journal.
 
-Open this folder in VS Code. Use **Terminal → Run Task → Run Too Many Tabs Open**. The existing scripts expect a C++17 compiler and freeglut; their original compiler location is `C:\msys64\mingw64\bin`.
+The lantern count is fictional story progression, not a mental-health score. The game does not diagnose conditions or measure well-being. Progress lasts for the current session.
 
-See [README.txt](README.txt) for the original build instructions and complete controls. The executable and library binaries are excluded from Git.
+## Run on the configured Windows PC
 
-## Main controls
+Open PowerShell in this project folder:
+
+    .\build.ps1 -Test
+    .\run.ps1
+
+The build script prefers **C:\msys64\ucrt64\bin**, then checks the original mingw64 location or a compiler on PATH. It needs C++17, freeglut, GLU, OpenGL, and Python 3. Python validates task data before compilation. Keep the shader and audio assets with the application; run.ps1 sets the working directory and runtime DLL path.
+
+## Clickable controls
 
 | Input | Action |
 | --- | --- |
-| Enter | Open the desktop |
-| 1–4 | Select a task |
-| C / L | Acknowledge the next example step / set a task aside or bring it back |
-| F / M | Toggle Focus mode / simulated notification muting |
-| B / Space | Open or leave the break screen / pause its animation |
-| R / Esc | Reset / exit |
+| Enter | Start or continue exploring |
+| Click ground / WASD | Walk to a point / walk manually |
+| Click scroll or left-hand task button | Select its task and walk toward the next spark |
+| E or Small step button | Acknowledge the example step when near its spark |
+| L / F / M | Set aside or restore a tab / Focus / quiet the message moth |
+| B or pond | Visit the quiet glade |
+| T / J | Toggle compact task details / original desktop journal |
+| N or Day/Night button | Switch themes without losing progress |
+| V or Sound button | Toggle the original background ambience |
+| Right-drag / wheel | Orbit / zoom the 3D camera |
+| H / F11 / R / Esc | Help / full-screen / restart / exit |
 
-## Verification
+All game text is English. Sound starts off. The original 24-second chime-and-pad loop is synthesized by tools/generate_ambience.py; it uses no downloaded recordings. Sound playback is currently implemented for Windows. Other platforms retain the visuals and gameplay.
 
-The source includes a `--self-test` mode for task-step limits, Later behavior, reset, and click boundaries. Record actual manual results in [TESTING.csv](TESTING.csv); blank results are not passing results.
+## What each language does
 
-## Planned development
+| Language | Actual role |
+| --- | --- |
+| C++ | Gameplay, 3D geometry, camera, picking, UI, input, and sound control |
+| GLSL | Custom surface lighting, rim light, and day/night atmospheric fog |
+| Python | Task-content validation, generated C++ data, original audio synthesis, and content tests |
+| PowerShell | Windows build, test, and launch scripts |
 
-The next update is a full 3D fairytale game adaptation that preserves the original theme and meaningful choices. This baseline commit does not yet implement the 3D update.
+Editable task data is in assets/tasks.json. The generated task_data.hpp is checked in so the source stays understandable. Technology badges describe the implementation; they are not GitHub achievements.
+
+## Verification and automation
+
+GitHub Actions installs Linux graphics development libraries, validates content, checks the audio format, compiles the game, and runs the C++ gameplay checks. The self-test runs without opening a window.
+
+Local checks cover task limits, Later behavior, proximity, lantern limits, rest, sanctuary completion, movement, reset, theme buttons, and task navigation. Five Python tests cover content validation. Device-specific visual and audio checks remain part of manual testing.
+
+See [the source guide](docs/Code%20Guide.md) for a file-by-file explanation.
+
+## Development history
+
+The original 2D desktop is preserved in baseline commit **8022581**. The 3D adaptation is developed on **codex/lanternwood-3d**, with working updates committed separately. No license has been added; upstream library licenses still apply.
+
