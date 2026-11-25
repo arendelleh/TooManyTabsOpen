@@ -17,7 +17,7 @@ Captured from the game. Use the character panel to change seasons and the day/ni
 | **Summer night** | **Moon Mage character** |
 | ![Summer Lanternwood with fairy lights](docs/screenshots/summer-night.png) | ![Moon Mage in the Daydream Grove](docs/screenshots/moon-mage.png) |
 
-## Two moods, one story
+## Two moods of the story
 
 - **The Daydream Grove:** pastel skies, blossom-colored trees, butterflies, drifting petals, an awake woodland companion, and decorative lanterns switched off.
 - **The Lanternwood:** moonlight, illuminated lantern cages, fairy-light strings, fireflies, moonflowers, and a resting deer.
